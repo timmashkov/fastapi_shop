@@ -1,6 +1,4 @@
 from contextlib import asynccontextmanager
-from core.models.base import Base
-from core.models.db_helper import db_helper
 import uvicorn
 from fastapi import FastAPI
 from items_views import router as items_router
@@ -11,9 +9,8 @@ from api_v1 import router as router_v1
 async def lifespan(app: FastAPI):
     """
     Создал функцию для асинхронного создания БД
+    UPD. Вместо создания БД через скрипт, заюзал Alembic
     """
-    async with db_helper.engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
     yield
 
 
