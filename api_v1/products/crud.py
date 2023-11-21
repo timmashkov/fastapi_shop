@@ -5,7 +5,7 @@ Update
 Delete
 """
 from sqlalchemy.engine import Result
-from sqlalchemy import select, insert
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from core.models import Product
 from .schemas import ProductCreate, ProductUpdate, ProductUpdatePartial
