@@ -9,6 +9,16 @@ class UserAddingSchema(BaseModel):
     username: str
 
 
+class ProfileAddingSchema(BaseModel):
+    first_name: str | None
+    last_name: str | None
+    bio: str | None
+
+
+class ProfileResponseSchema(ProfileAddingSchema):
+    user_id: int
+
+
 class UserUpdatePartial(UserAddingSchema):
     """
     Схема для частичного апдейта записи
