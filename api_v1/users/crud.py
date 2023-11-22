@@ -6,6 +6,7 @@ Delete
 """
 from sqlalchemy.engine import Result
 from sqlalchemy import select, update, delete
+from sqlalchemy.orm import joinedload
 from sqlalchemy.ext.asyncio import AsyncSession
 from core.models import User, Profile
 from .schemas import UserAddingSchema, ProfileAddingSchema
@@ -124,4 +125,18 @@ async def drop_user_profile(first_name: str, session: AsyncSession):
     profile: Result = await session.execute(stmt)
     answer = profile.scalars().all()
     await session.commit()
+    return answer
+
+
+async def get_user_with_profile(username: str, session: AsyncSession):
+    """
+    Функция возврата юзера и связанного с ним профиля
+    вместо join попробовал joinload(гораздо удобнее)
+    :param username:
+    :param session:
+    :return: answer
+    """
+    stmt = select(User).options(joinedload(User.profiles)).where(User.username == username)
+    result = await session.scalars(stmt)
+    answer = result.all()
     return answer

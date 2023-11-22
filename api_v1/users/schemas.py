@@ -32,3 +32,12 @@ class UserResponseSchema(UserAddingSchema):
     """
     model_config = ConfigDict(from_attributes=True)
     id: int
+
+
+class UserWithProfile(BaseModel):
+    id: int
+    username: str
+    first_name: str | None
+    last_name: str | None
+    bio: str | None
+    user_id: int

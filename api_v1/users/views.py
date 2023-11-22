@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from .crud import get_users, add_user, get_user, change_user, drop_user, add_user_profile, \
-    edit_user_profile, drop_user_profile
+    edit_user_profile, drop_user_profile, get_user_with_profile
 from .schemas import UserResponseSchema, UserAddingSchema, UserUpdatePartial, \
-    ProfileResponseSchema, ProfileAddingSchema
+    ProfileResponseSchema, ProfileAddingSchema, UserWithProfile
 from core.models import User
 from core.models import db_helper
 from .dependencies import user_by_id
@@ -21,6 +21,12 @@ async def show_users(session: AsyncSession = Depends(db_helper.scoped_session_de
 async def show_user(username: str,
                     session: AsyncSession = Depends(db_helper.scoped_session_dependency)):
     return await get_user(session=session, username=username)
+
+
+@router.get('/mixed/{username}')
+async def get_all(username: str,
+                  session: AsyncSession = Depends(db_helper.scoped_session_dependency)):
+    return await get_user_with_profile(username=username, session=session)
 
 
 @router.post('/create', response_model=UserResponseSchema)
