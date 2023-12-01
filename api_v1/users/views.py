@@ -1,7 +1,8 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
-from .crud import get_users, add_user, get_user, change_user, drop_user, get_user_with_profile
-from .schemas import UserResponseSchema, UserAddingSchema, UserUpdatePartial, UserWithProfile
+from .crud import (get_users, add_user, get_user, change_user, drop_user, get_user_with_profile
+, get_user_with_post, get_user_with_products)
+from .schemas import UserResponseSchema, UserAddingSchema, UserUpdatePartial
 from core.models import User
 from core.models import db_helper
 from .dependencies import user_by_id
@@ -22,10 +23,20 @@ async def show_user(username: str,
     return await get_user(session=session, username=username)
 
 
-@router.get('/mixed/{username}')
+@router.get('/user_profile/{username}')
 async def get_all(username: str,
                   session: AsyncSession = Depends(db_helper.scoped_session_dependency)):
     return await get_user_with_profile(username=username, session=session)
+
+
+@router.get('/user_post/')
+async def get_users_posts(session: AsyncSession = Depends(db_helper.scoped_session_dependency)):
+    return await get_user_with_post(session=session)
+
+
+@router.get('/user_product/')
+async def get_users_product(session: AsyncSession = Depends(db_helper.scoped_session_dependency)):
+    return await get_user_with_products(session=session)
 
 
 @router.post('/create', response_model=UserResponseSchema)

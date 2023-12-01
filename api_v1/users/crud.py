@@ -106,3 +106,17 @@ async def get_user_with_profile(username: str, session: AsyncSession):
     except Exception as e:
         return {'message': 'something went wrong',
                 'error': e}
+
+
+async def get_user_with_post(session: AsyncSession):
+    stmt = select(User).options(joinedload(User.post_link)).order_by(User.id)
+    users = await session.execute(stmt)
+    answer = users.unique().scalars().all()
+    return answer
+
+
+async def get_user_with_products(session: AsyncSession):
+    stmt = select(User).options(joinedload(User.products)).order_by(User.id)
+    users = await session.execute(stmt)
+    answer = users.unique().scalars().all()
+    return answer

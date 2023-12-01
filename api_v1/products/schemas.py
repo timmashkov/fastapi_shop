@@ -8,6 +8,7 @@ class ProductBase(BaseModel):
     name: str
     description: str
     price: int
+    user_id: int
 
 
 class ProductCreate(ProductBase):
