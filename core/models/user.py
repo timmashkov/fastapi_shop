@@ -7,6 +7,7 @@ from core.models.base import Base
 if TYPE_CHECKING:
     from .post import Post
     from .profile import Profile
+    from .product import Product
 
 
 class User(Base):
@@ -14,8 +15,9 @@ class User(Base):
 
     username: Mapped[str] = mapped_column(String(20), unique=True)
 
-    post_link: Mapped[list["Post"]] = relationship('Post', backref="user_link")
+    post_link: Mapped[list["Post"]] = relationship('Post', back_populates="user_link")
     profiles: Mapped["Profile"] = relationship('Profile', backref='profile')
+    products: Mapped[list["Product"]] = relationship("Product", back_populates="user")
 
     def __str__(self):
         return f"{self.__class__.__name__}(username={self.username})"

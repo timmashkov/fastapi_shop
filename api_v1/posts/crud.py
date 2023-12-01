@@ -2,7 +2,7 @@ from sqlalchemy import Result, update, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.models import Post
-from .schemas import PostInput, PostUpdate
+from .schemas import PostInput
 
 
 async def create_post(session: AsyncSession, data: PostInput):

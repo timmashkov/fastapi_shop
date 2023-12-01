@@ -2,8 +2,8 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.models import db_helper
-from .crud import create_post, get_post, change_post, del_post
-from .schemas import PostOutput, PostInput, PostUpdate
+from .crud import create_post, get_post, del_post
+from .schemas import PostOutput, PostInput
 
 
 router = APIRouter(

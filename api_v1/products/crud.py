@@ -10,6 +10,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from core.models import Product
 from .schemas import ProductCreate, ProductUpdate, ProductUpdatePartial
 
+
 async def get_products(session: AsyncSession) -> list[Product]:
     """
     Асинк функция выбирает все значения таблицы Product, и возвращает их список
