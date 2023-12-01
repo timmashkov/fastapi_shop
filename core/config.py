@@ -1,12 +1,19 @@
 from pydantic_settings import BaseSettings
 from pydantic import BaseModel
-from pathlib import Path
+from dotenv import load_dotenv
+import os
 
-BASE_DIR = Path(__file__).parent.parent
+load_dotenv()
+
 
 class DbSettings(BaseModel):
-    url: str = f'sqlite+aiosqlite:///{BASE_DIR}/test.sqlite3'
-    echo: bool = True
+    db_host: str = os.environ.get("DB_HOST")
+    db_name: str = os.environ.get("DB_NAME")
+    db_port: str = os.environ.get("DB_PORT")
+    db_user: str = os.environ.get("DB_USER")
+    db_pass: str = os.environ.get("DB_PASS")
+    url: str = f"postgresql+asyncpg://{db_user}:{db_pass}@{db_host}:{db_port}/{db_name}"
+    echo: bool = False
 
 
 class Settings(BaseSettings):

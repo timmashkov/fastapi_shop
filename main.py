@@ -4,6 +4,7 @@ from fastapi import FastAPI
 from items_views import router as items_router
 from api_v1 import router as router_v1
 
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """
