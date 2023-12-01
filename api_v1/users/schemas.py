@@ -1,5 +1,4 @@
 from pydantic import BaseModel, ConfigDict
-from typing import Optional
 
 
 class UserAddingSchema(BaseModel):
@@ -7,16 +6,6 @@ class UserAddingSchema(BaseModel):
     Базовая модель добавления юзера без id.
     """
     username: str
-
-
-class ProfileAddingSchema(BaseModel):
-    first_name: str | None
-    last_name: str | None
-    bio: str | None
-
-
-class ProfileResponseSchema(ProfileAddingSchema):
-    user_id: int
 
 
 class UserUpdatePartial(UserAddingSchema):

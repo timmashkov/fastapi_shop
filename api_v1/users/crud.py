@@ -5,11 +5,12 @@ Update
 Delete
 """
 from sqlalchemy.engine import Result
-from sqlalchemy import select, update, delete
+from sqlalchemy import select, update
 from sqlalchemy.orm import joinedload
 from sqlalchemy.ext.asyncio import AsyncSession
-from core.models import User, Profile
-from .schemas import UserAddingSchema, ProfileAddingSchema
+from core.models import User
+from .schemas import UserAddingSchema
+
 
 async def get_users(session: AsyncSession) -> list[User]:
     """
@@ -34,36 +35,6 @@ async def add_user(session: AsyncSession, user_in: UserAddingSchema) -> User:
     session.add(users)
     await session.commit()
     return users
-
-
-async def add_user_profile(session: AsyncSession,
-                           user_id: int,
-                           data: ProfileAddingSchema) -> Profile:
-    profile = Profile(user_id=user_id,
-                      first_name=data.first_name,
-                      last_name=data.last_name,
-                      bio=data.bio)
-    session.add(profile)
-    await session.commit()
-    return profile
-
-
-async def edit_user_profile(first_name: str,
-                            session: AsyncSession,
-                            data: ProfileAddingSchema):
-    stmt = update(Profile)\
-        .where(Profile.first_name == first_name)\
-        .values(first_name=data.first_name,
-                last_name=data.last_name,
-                bio=data.bio).returning(Profile.id,
-                                        Profile.first_name,
-                                        Profile.last_name,
-                                        Profile.bio,
-                                        Profile.user_id)
-    result: Result = await session.execute(stmt)
-    answer = result.scalars().all()
-    await session.commit()
-    return answer
 
 
 async def get_user(session: AsyncSession, username: str):
@@ -103,29 +74,20 @@ async def change_user(username: str,
     return answer
 
 
-async def drop_user(session: AsyncSession, user: User) -> None:
+async def drop_user(session: AsyncSession, user: User) -> dict | None:
     """
     Функция удаления юзера
     :param session:
     :param user:
     :return:
     """
-    await session.delete(user)
-    await session.commit()
-
-
-async def drop_user_profile(first_name: str, session: AsyncSession):
-    stmt = delete(Profile)\
-        .where(Profile.first_name == first_name)\
-        .returning(Profile.id,
-                   Profile.first_name,
-                   Profile.last_name,
-                   Profile.bio,
-                   Profile.user_id)
-    profile: Result = await session.execute(stmt)
-    answer = profile.scalars().all()
-    await session.commit()
-    return answer
+    try:
+        await session.delete(user)
+        await session.commit()
+        return {'message': f'User {user} has been deleted'}
+    except Exception as e:
+        return {'message': 'something went wrong',
+                'error': e}
 
 
 async def get_user_with_profile(username: str, session: AsyncSession):
