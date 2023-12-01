@@ -98,7 +98,11 @@ async def get_user_with_profile(username: str, session: AsyncSession):
     :param session:
     :return: answer
     """
-    stmt = select(User).options(joinedload(User.profiles)).where(User.username == username)
-    result = await session.scalars(stmt)
-    answer = result.all()
-    return answer
+    try:
+        stmt = select(User).options(joinedload(User.profiles)).where(User.username == username)
+        result = await session.scalars(stmt)
+        answer = result.all()
+        return answer
+    except Exception as e:
+        return {'message': 'something went wrong',
+                'error': e}
