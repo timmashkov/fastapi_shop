@@ -3,6 +3,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 
 from core.models.base import Base
 
+
 class Post(Base):
     __tablename__ = "post"
 
