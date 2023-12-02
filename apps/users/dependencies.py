@@ -3,14 +3,15 @@ from typing import Annotated
 from fastapi import Path, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from core.models import db_helper, User
+from core.database import vortex
+from core.models import User
 
 from . import crud
 
 
 async def user_by_id(
     user_in: Annotated[str, Path],
-    session: AsyncSession = Depends(db_helper.scoped_session_dependency),
+    session: AsyncSession = Depends(vortex.scoped_session_dependency),
 ) -> User:
     product = await crud.get_user(session=session, username=user_in)
     if product is not None:

@@ -50,12 +50,10 @@ async def get_user(session: AsyncSession, username: str):
     if user:
         return user
     else:
-        return {'error': f"There is no {username}"}
+        return {"error": f"There is no {username}"}
 
 
-async def change_user(username: str,
-                      session: AsyncSession,
-                      data: UserAddingSchema):
+async def change_user(username: str, session: AsyncSession, data: UserAddingSchema):
     """
     Функция для изменения данных юзера
     :param username:
@@ -63,11 +61,12 @@ async def change_user(username: str,
     :param data:
     :return:
     """
-    stmt = update(User)\
-        .where(User.username == username)\
-        .values(username=data.username)\
-        .returning(User.id,
-                   User.username)
+    stmt = (
+        update(User)
+        .where(User.username == username)
+        .values(username=data.username)
+        .returning(User.id, User.username)
+    )
     result: Result = await session.execute(stmt)
     await session.commit()
     answer = result.scalars().all()
@@ -84,10 +83,9 @@ async def drop_user(session: AsyncSession, user: User) -> dict | None:
     try:
         await session.delete(user)
         await session.commit()
-        return {'message': f'User {user} has been deleted'}
+        return {"message": f"User {user} has been deleted"}
     except Exception as e:
-        return {'message': 'something went wrong',
-                'error': e}
+        return {"message": "something went wrong", "error": e}
 
 
 async def get_user_with_profile(username: str, session: AsyncSession):
@@ -99,13 +97,16 @@ async def get_user_with_profile(username: str, session: AsyncSession):
     :return: answer
     """
     try:
-        stmt = select(User).options(joinedload(User.profiles)).where(User.username == username)
+        stmt = (
+            select(User)
+            .options(joinedload(User.profiles))
+            .where(User.username == username)
+        )
         result = await session.scalars(stmt)
         answer = result.all()
         return answer
     except Exception as e:
-        return {'message': 'something went wrong',
-                'error': e}
+        return {"message": "something went wrong", "error": e}
 
 
 async def get_user_with_post(session: AsyncSession):
@@ -123,8 +124,8 @@ async def get_user_with_products(session: AsyncSession):
 
 
 async def get_user_with_profile_and_products(session: AsyncSession):
-    stmt = (
-        select(Profile).options(joinedload(Profile.owner).selectinload(User.products))
+    stmt = select(Profile).options(
+        joinedload(Profile.owner).selectinload(User.products)
     )
     things = await session.execute(stmt)
     answer = things.unique().scalars().all()

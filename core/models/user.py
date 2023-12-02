@@ -15,8 +15,8 @@ class User(Base):
 
     username: Mapped[str] = mapped_column(String(20), unique=True)
 
-    post_link: Mapped[list["Post"]] = relationship('Post', back_populates="user_link")
-    profiles: Mapped["Profile"] = relationship('Profile', back_populates='owner')
+    post_link: Mapped[list["Post"]] = relationship("Post", back_populates="user_link")
+    profiles: Mapped["Profile"] = relationship("Profile", back_populates="owner")
     products: Mapped[list["Product"]] = relationship("Product", back_populates="user")
 
     def __str__(self):
