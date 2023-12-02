@@ -8,7 +8,7 @@ from sqlalchemy.engine import Result
 from sqlalchemy import select, update
 from sqlalchemy.orm import joinedload
 from sqlalchemy.ext.asyncio import AsyncSession
-from core.models import User
+from core.models import User, Profile
 from .schemas import UserAddingSchema
 
 
@@ -119,4 +119,13 @@ async def get_user_with_products(session: AsyncSession):
     stmt = select(User).options(joinedload(User.products)).order_by(User.id)
     users = await session.execute(stmt)
     answer = users.unique().scalars().all()
+    return answer
+
+
+async def get_user_with_profile_and_products(session: AsyncSession):
+    stmt = (
+        select(Profile).options(joinedload(Profile.owner).selectinload(User.products))
+    )
+    things = await session.execute(stmt)
+    answer = things.unique().scalars().all()
     return answer

@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from api_v1.profiles.crud import add_user_profile, edit_user_profile, drop_user_profile
-from api_v1.profiles.schemas import ProfileResponseSchema, ProfileAddingSchema
+from apps.profiles.crud import add_user_profile, edit_user_profile, drop_user_profile
+from apps.profiles.schemas import ProfileResponseSchema, ProfileAddingSchema
 from core.models import db_helper
 
 router = APIRouter(
