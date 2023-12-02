@@ -5,7 +5,7 @@ from .profiles.views import router as profiles_router
 from .posts.views import router as posts_router
 
 router = APIRouter(
-    prefix='/api_v1'
+    prefix='/apps'
 )
 
 router.include_router(router=products_router)

@@ -1,7 +1,7 @@
 from sqlalchemy import update, Result, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from api_v1.profiles.schemas import ProfileAddingSchema
+from apps.profiles.schemas import ProfileAddingSchema
 from core.models import Profile
 
 
