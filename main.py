@@ -1,7 +1,7 @@
 from contextlib import asynccontextmanager
 import uvicorn
 from fastapi import FastAPI
-from apps import router as router_v1
+from apps import router as apps_router
 
 
 @asynccontextmanager
@@ -15,7 +15,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="Learning FastAPI", lifespan=lifespan)
 
-app.include_router(router_v1, tags=["APPS"])
+app.include_router(apps_router)
 
 
 if __name__ == "__main__":

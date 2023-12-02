@@ -47,10 +47,12 @@ async def create_product(session: AsyncSession, data: ProductCreate) -> Product:
     return product
 
 
-async def update_product(session: AsyncSession,
-                         product: Product,
-                         data: ProductUpdate | ProductUpdatePartial,
-                         partial: bool = False) -> Product:
+async def update_product(
+    session: AsyncSession,
+    product: Product,
+    data: ProductUpdate | ProductUpdatePartial,
+    partial: bool = False,
+) -> Product:
     """
     Функция для апдейта значения в таблице
     :param session:
