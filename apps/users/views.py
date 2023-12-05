@@ -1,7 +1,8 @@
 from fastapi import APIRouter, Depends, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.responses import HTMLResponse
-#from fastapi.staticfiles import StaticFiles
+
+# from fastapi.staticfiles import StaticFiles
 
 from .crud import (
     get_users,
@@ -22,14 +23,17 @@ from .utils import templates
 
 router = APIRouter(prefix="/users")
 
-#router.mount("/apps/users/static", StaticFiles(directory="apps/users/static"), name="static")
+# router.mount("/apps/users/static", StaticFiles(directory="apps/users/static"), name="static")
 
 
 @router.get("/", response_class=HTMLResponse)
-async def show_users(request: Request,
-                     session: AsyncSession = Depends(vortex.scoped_session_dependency)):
+async def show_users(
+    request: Request, session: AsyncSession = Depends(vortex.scoped_session_dependency)
+):
     result = await get_users(session=session)
-    return templates.TemplateResponse("users.html", context={"request": request, "result": result})
+    return templates.TemplateResponse(
+        "users.html", context={"request": request, "result": result}
+    )
 
 
 @router.get("/{username}")
