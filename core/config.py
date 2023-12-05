@@ -17,6 +17,8 @@ class DbSettings(BaseModel):
 
 
 class Settings(BaseSettings):
+    auth_key: str = os.environ.get("SECRET_KEY")
+    public_key: str = os.environ.get("PUBLIC_KEY")
     db: DbSettings = DbSettings()
 
 

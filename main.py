@@ -14,7 +14,7 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(title="Learning FastAPI", lifespan=lifespan)
-
+#TODO: удалить apps/users
 app.include_router(apps_router)
 
 

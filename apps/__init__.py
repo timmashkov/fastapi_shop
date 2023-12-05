@@ -4,7 +4,7 @@ from .users.views import router as users_router
 from .profiles.views import router as profiles_router
 from .posts.views import router as posts_router
 from .orders.views import router as orders_router
-from .auth.views import router as auth_router
+from .auth import router as auth_router
 
 router = APIRouter(prefix="/apps")
 
