@@ -1,4 +1,7 @@
+import time
+
 from fastapi import APIRouter, Depends
+from fastapi_cache.decorator import cache
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from apps.orders.crud import get_orders, create_order, drop_order
@@ -27,3 +30,11 @@ async def del_order(
     order_id: int, session: AsyncSession = Depends(vortex.scoped_session_dependency)
 ):
     return await drop_order(order_id=order_id, session=session)
+
+
+@router.get("/test")
+@cache(expire=60)
+async def long_func():
+    time.sleep(3)
+    return "testing redis"
+

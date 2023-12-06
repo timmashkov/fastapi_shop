@@ -1,21 +1,20 @@
-from contextlib import asynccontextmanager
 import uvicorn
 from fastapi import FastAPI
+from fastapi_cache import FastAPICache
+from fastapi_cache.backends.redis import RedisBackend
+from redis import asyncio as aioredis
 from apps import router as apps_router
 
 
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    """
-    Создал функцию для асинхронного создания БД
-    UPD. Вместо создания БД через скрипт, заюзал Alembic
-    """
-    yield
-
-
-app = FastAPI(title="Learning FastAPI", lifespan=lifespan)
+app = FastAPI(title="Learning FastAPI")
 #TODO: удалить apps/users
 app.include_router(apps_router)
+
+
+@app.on_event("startup")
+async def startup():
+    redis = aioredis.from_url("redis://localhost", encoding='utf-8', decode_response=True)
+    FastAPICache.init(RedisBackend(redis), prefix="fastapi-cache")
 
 
 if __name__ == "__main__":

@@ -19,6 +19,8 @@ class DbSettings(BaseModel):
 class Settings(BaseSettings):
     auth_key: str = os.environ.get("SECRET_KEY")
     public_key: str = os.environ.get("PUBLIC_KEY")
+    smtp_user: str = os.environ.get("SMTP_USER")
+    smtp_pass: str = os.environ.get("GOOGLE_API_PASS")
     db: DbSettings = DbSettings()
 
 
