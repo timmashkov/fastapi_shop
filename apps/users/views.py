@@ -1,4 +1,5 @@
-from fastapi import APIRouter, Depends, Request
+
+from fastapi import APIRouter, Depends, Request, BackgroundTasks
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.responses import HTMLResponse
 
@@ -19,9 +20,11 @@ from .schemas import UserResponseSchema, UserAddingSchema, UserUpdatePartial
 from core.models import User
 from core.database import vortex
 from .dependencies import user_by_id
-from .utils import templates
+from .utils import templates, send_mail
+from ..auth import current_user
 
 router = APIRouter(prefix="/users")
+
 
 # router.mount("/apps/users/static", StaticFiles(directory="apps/users/static"), name="static")
 
@@ -94,3 +97,18 @@ async def delete_user(
     session: AsyncSession = Depends(vortex.scoped_session_dependency),
 ):
     return await drop_user(session=session, user=user)
+
+
+@router.get("/dashboard")
+def get_dashboard_report(background_tasks: BackgroundTasks, user=Depends(current_user)):
+    # 1400 ms - Клиент ждет
+    #send_mail(user.username)
+    # 500 ms - Задача выполняется на фоне FastAPI в event loop'е или в другом треде
+    #background_tasks.add_task(send_mail, user.username)
+    # 600 ms - Задача выполняется воркером Celery в отдельном процессе
+    send_mail.delay(user.username)
+    return {
+        "status": 200,
+        "data": "Письмо отправлено",
+        "details": None
+    }
