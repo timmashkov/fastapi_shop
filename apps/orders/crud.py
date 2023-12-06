@@ -5,7 +5,7 @@ Update
 Delete
 """
 from sqlalchemy.engine import Result
-from sqlalchemy import select, delete
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from core.models import Order
 
@@ -22,14 +22,19 @@ async def get_orders(session: AsyncSession) -> list[Order]:
     return list(orders)
 
 
-async def get_order(session: AsyncSession, order_id: int) -> Order | None:
+async def get_order(session: AsyncSession, order_id: int):
     """
     Асинк функция выбирает значение таблицы Product по id, и возвращает его
     :param session:
     :param order_id:
     :return: Order
     """
-    return await session.get(Order, order_id)
+    stmt = select(Order).where(Order.id == order_id)
+    result: Result = await session.execute(stmt)
+    answer = result.scalars().one_or_none()
+    if answer:
+        return answer
+    return {"error": f"There is no {order_id}"}
 
 
 async def create_order(session: AsyncSession, promocode: str | None = None) -> Order:
@@ -39,11 +44,10 @@ async def create_order(session: AsyncSession, promocode: str | None = None) -> O
     return order
 
 
-async def drop_order(session: AsyncSession, order_id: int):
+async def drop_order(order: Order, session: AsyncSession):
     try:
-        stmt = delete(Order).where(Order.id == order_id)
-        await session.execute(stmt)
+        await session.delete(order)
         await session.commit()
-        return {"message": f" Order {order_id} has been deleted"}
+        return {"message": f" Order {order} has been deleted"}
     except Exception as e:
         return {"message": "Something went wrong", "error": e}
