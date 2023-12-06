@@ -2,7 +2,9 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.database import vortex
+from core.models import Post
 from .crud import create_post, get_post, del_post
+from .dependencies import post_by_id
 from .schemas import PostOutput, PostInput
 
 
@@ -19,13 +21,15 @@ async def add_post(
 
 @router.get("/get_post")
 async def take_post(
-    post_id: int, session: AsyncSession = Depends(vortex.scoped_session_dependency)
+    post_in: Post = Depends(post_by_id),
+    session: AsyncSession = Depends(vortex.scoped_session_dependency),
 ):
-    return await get_post(post_id=post_id, session=session)
+    return post_in
 
 
 @router.delete("/del_post")
 async def delete_post(
-    post_id: int, session: AsyncSession = Depends(vortex.scoped_session_dependency)
+    post_in: Post = Depends(post_by_id),
+    session: AsyncSession = Depends(vortex.scoped_session_dependency),
 ):
-    return await del_post(post_id=post_id, session=session)
+    return await del_post(post=post_in, session=session)
