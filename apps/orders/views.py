@@ -5,7 +5,9 @@ from fastapi_cache.decorator import cache
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from apps.orders.crud import get_orders, create_order, drop_order
+from apps.orders.dependecies import order_by_id
 from core.database import vortex
+from core.models import Order
 
 router = APIRouter(prefix="/orders")
 
@@ -15,6 +17,12 @@ async def show_orders(
     session: AsyncSession = Depends(vortex.scoped_session_dependency),
 ):
     return await get_orders(session=session)
+
+
+@router.get("/get_order")
+async def get_order(order: Order = Depends(order_by_id),
+                     session: AsyncSession = Depends(vortex.scoped_session_dependency)):
+    return order
 
 
 @router.post("/add_order")
@@ -27,9 +35,10 @@ async def add_order(
 
 @router.delete("/del_order")
 async def del_order(
-    order_id: int, session: AsyncSession = Depends(vortex.scoped_session_dependency)
+    order: Order = Depends(order_by_id),
+        session: AsyncSession = Depends(vortex.scoped_session_dependency)
 ):
-    return await drop_order(order_id=order_id, session=session)
+    return await drop_order(order=order, session=session)
 
 
 @router.get("/test")
