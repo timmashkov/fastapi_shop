@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block head %}
+<script>
+    const searchForOperation = () => {
+        const searchInputValue = document.getElementById("product_search").value;
+        window.location.href = `/pages/search/${searchInputValue}`;
+    }
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="flex justify-center flex-col items-center">
+    <div class="flex my-3 gap-5">
+        <input id="product_search" type="text" placeholder="Поиск пользователей" class="text-xl">
+        <button onclick="searchForOperation()" class="border-2 rounded-3xl bg-gray-300 p-3">оиск пользователей</button>
+    </div>
+    <span>Например Тимур</span>
+    {% for user in users %}
+        <div class="flex rounded-3 border-2 p-3 mt-5">
+            <img width="150" src="{{ url_for('static', path='img.jpg') }}" alt="Стонкс" class="mr-5">
+            <div class="flex flex-col">
+                <span class="text-2xl font-bold">{{ user.username }}</span>
+                <span class="text-lg">{{ user.id }}</span>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}
