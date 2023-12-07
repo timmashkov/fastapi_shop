@@ -4,11 +4,11 @@
 <div>
     <p align='center' > All products </p>
     <img src="{{ url_for('static', path='banner.jpg') }}"
-    alt="img", align="center">
+    alt="img", width="100%">
     {% for i in products %}
-        <ul>{{ i }}</ul>
+        <ol>{{ i }}</ol>
     {% endfor %}
-    <p align='center' >{{ phrase }}</p>
+    <p align='center' ></p>
 </div>
 
 {% endblock %}
