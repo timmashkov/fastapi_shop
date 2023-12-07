@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div>
+    <p align='center' > All products </p>
+    <img src="{{ url_for('static', path='banner.jpg') }}"
+    alt="img", align="center">
+    {% for i in products %}
+        <ul>{{ i }}</ul>
+    {% endfor %}
+    <p align='center' >{{ phrase }}</p>
+</div>
+
+{% endblock %}
