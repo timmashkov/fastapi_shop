@@ -23,12 +23,7 @@ class Settings(BaseSettings):
 
     db: DbSettings = DbSettings()
 
-    MAIL_USERNAME: str = os.getenv("MAIL_USERNAME")
-    MAIL_PASSWORD: str = os.getenv("MAIL_PASSWORD")
-    MAIL_FROM: str = os.getenv("MAIL_FROM")
-    MAIL_PORT: int = int(os.getenv("MAIL_PORT"))
-    MAIL_SERVER: str = os.getenv("MAIL_SERVER")
-    MAIL_FROM_NAME: str = os.getenv("MAIN_FROM_NAME")
+    origins: list = ["http://127.0.0.1:8000"]
 
 
 settings = Settings()
