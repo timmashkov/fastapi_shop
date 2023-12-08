@@ -19,7 +19,12 @@ class DbSettings(BaseModel):
 class Settings(BaseSettings):
     auth_key: str = os.environ.get("SECRET_KEY")
     public_key: str = os.environ.get("PUBLIC_KEY")
-    smtp_pass: str = os.environ.get("GOOGLE_API_PASS")
+
+    GOOGLE_API_PASS: str = os.environ.get("GOOGLE_API_PASS")
+    MAIL_PORT: str = os.environ.get("MAIL_PORT")
+    MAIL_FROM: str = os.environ.get("MAIL_FROM")
+    MAIL_SERVER: str = os.environ.get("MAIL_SERVER")
+    MAIL_USERNAME: str = os.environ.get("MAIL_USERNAME")
 
     db: DbSettings = DbSettings()
 
