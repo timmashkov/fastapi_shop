@@ -1,8 +1,5 @@
-from datetime import datetime
-
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect, Depends
-from fastapi.responses import HTMLResponse
-from sqlalchemy import insert
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.database import vortex
@@ -44,6 +41,15 @@ class ConnectionManager:
 
 
 manager = ConnectionManager()
+
+
+@router.get("/last_messages")
+async def get_last_messages(session: AsyncSession = Depends(vortex.get_scoped_session)):
+    query = select(Chat).order_by(Chat.id.desc()).limit(5)
+    result = await session.execute(query)
+    answer = result.all()
+    var_list = [msg[0].as_dict() for msg in answer]
+    return var_list
 
 
 @router.websocket("/ws/{client_id}")
