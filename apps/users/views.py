@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, Request, BackgroundTasks
+from fastapi_cache.decorator import cache
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.responses import HTMLResponse
 from .crud import (
@@ -22,11 +23,13 @@ router = APIRouter(prefix="/users")
 
 
 @router.get("/", response_model=list[UserResponseSchema])
+@cache(expire=60)
 async def show_users(session: AsyncSession = Depends(vortex.scoped_session_dependency)):
     return await get_users(session=session)
 
 
 @router.get("/{username}")
+@cache(expire=60)
 async def show_user(
     username: str, session: AsyncSession = Depends(vortex.scoped_session_dependency)
 ):
@@ -34,6 +37,7 @@ async def show_user(
 
 
 @router.get("/user_profile/{username}")
+@cache(expire=60)
 async def get_all(
     username: str, session: AsyncSession = Depends(vortex.scoped_session_dependency)
 ):
@@ -41,6 +45,7 @@ async def get_all(
 
 
 @router.get("/user_post/")
+@cache(expire=60)
 async def get_users_posts(
     session: AsyncSession = Depends(vortex.scoped_session_dependency),
 ):
@@ -48,6 +53,7 @@ async def get_users_posts(
 
 
 @router.get("/user_product/")
+@cache(expire=60)
 async def get_users_product(
     session: AsyncSession = Depends(vortex.scoped_session_dependency),
 ):
@@ -55,6 +61,7 @@ async def get_users_product(
 
 
 @router.get("/user_product_profile/")
+@cache(expire=60)
 async def get_users_product_profile(
     session: AsyncSession = Depends(vortex.scoped_session_dependency),
 ):
@@ -84,14 +91,3 @@ async def delete_user(
     session: AsyncSession = Depends(vortex.scoped_session_dependency),
 ):
     return await drop_user(session=session, user=user)
-
-
-@router.get("/dashboard")
-def get_dashboard_report(background_tasks: BackgroundTasks, user=Depends(current_user)):
-    # 1400 ms - Клиент ждет
-    # send_mail(user.username)
-    # 500 ms - Задача выполняется на фоне FastAPI в event loop'е или в другом треде
-    # background_tasks.add_task(send_mail, user.username)
-    # 600 ms - Задача выполняется воркером Celery в отдельном процессе
-    send_mail.delay(user.username)
-    return {"status": 200, "data": "Письмо отправлено", "details": None}

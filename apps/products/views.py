@@ -1,4 +1,5 @@
 from fastapi import APIRouter, HTTPException, status, Depends
+from fastapi_cache.decorator import cache
 from sqlalchemy.ext.asyncio import AsyncSession
 from .dependencies import product_by_id
 from .crud import (
@@ -15,6 +16,7 @@ router = APIRouter(prefix="/products")
 
 
 @router.get("/", response_model=list[Product])
+@cache(expire=60)
 async def take_products(
     session: AsyncSession = Depends(vortex.scoped_session_dependency),
 ):
@@ -30,6 +32,7 @@ async def add_product(
 
 
 @router.get("/{id}/", response_model=Product)
+@cache(expire=60)
 async def take_product(
     id: int, session: AsyncSession = Depends(vortex.scoped_session_dependency)
 ):

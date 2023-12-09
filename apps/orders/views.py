@@ -13,6 +13,7 @@ router = APIRouter(prefix="/orders")
 
 
 @router.get("/show_orders")
+@cache(expire=60)
 async def show_orders(
     session: AsyncSession = Depends(vortex.scoped_session_dependency),
 ):
@@ -41,10 +42,3 @@ async def del_order(
     session: AsyncSession = Depends(vortex.scoped_session_dependency),
 ):
     return await drop_order(order=order, session=session)
-
-
-@router.get("/test")
-@cache(expire=60)
-async def long_func():
-    time.sleep(3)
-    return "testing redis"

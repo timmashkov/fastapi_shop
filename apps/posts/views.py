@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends
+from fastapi_cache.decorator import cache
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.database import vortex
@@ -20,6 +21,7 @@ async def add_post(
 
 
 @router.get("/get_post")
+@cache(expire=60)
 async def take_post(
     post_in: Post = Depends(post_by_id),
     session: AsyncSession = Depends(vortex.scoped_session_dependency),

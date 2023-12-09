@@ -1,4 +1,5 @@
 from fastapi import APIRouter, BackgroundTasks, Depends
+from fastapi_cache.decorator import cache
 
 from apps.auth import current_user
 from apps.tasks.mail import send_email_report_dashboard
@@ -7,6 +8,7 @@ router = APIRouter(prefix="/tasks")
 
 
 @router.get("/dashboard")
+@cache(expire=60)
 def get_dashboard_report(background_tasks: BackgroundTasks, user=Depends(current_user)):
     # 1400 ms - Клиент ждет
     send_email_report_dashboard(user.username)
