@@ -20,8 +20,10 @@ async def show_orders(
 
 
 @router.get("/get_order")
-async def get_order(order: Order = Depends(order_by_id),
-                     session: AsyncSession = Depends(vortex.scoped_session_dependency)):
+async def get_order(
+    order: Order = Depends(order_by_id),
+    session: AsyncSession = Depends(vortex.scoped_session_dependency),
+):
     return order
 
 
@@ -36,7 +38,7 @@ async def add_order(
 @router.delete("/del_order")
 async def del_order(
     order: Order = Depends(order_by_id),
-        session: AsyncSession = Depends(vortex.scoped_session_dependency)
+    session: AsyncSession = Depends(vortex.scoped_session_dependency),
 ):
     return await drop_order(order=order, session=session)
 
@@ -46,4 +48,3 @@ async def del_order(
 async def long_func():
     time.sleep(3)
     return "testing redis"
-

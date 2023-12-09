@@ -5,9 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from core.database import vortex
 from core.models import Chat
 
-router = APIRouter(
-    prefix="/chat"
-)
+router = APIRouter(prefix="/chat")
 
 
 class ConnectionManager:
@@ -24,8 +22,7 @@ class ConnectionManager:
     async def send_personal_message(self, message: str, websocket: WebSocket):
         await websocket.send_text(message)
 
-    async def broadcast(self, message: str,
-                        add_to_db: bool):
+    async def broadcast(self, message: str, add_to_db: bool):
         if add_to_db:
             await self.add_messages_to_db(message=message)
         for connection in self.active_connections:

@@ -18,18 +18,18 @@ async def get_user_db(
 
 def get_email(username: str):
     email = EmailMessage()
-    email['Subject'] = 'Thanx for using my service'
-    email['From'] = settings.MAIL_FROM
-    email['To'] = settings.MAIL_USERNAME
+    email["Subject"] = "Thanx for using my service"
+    email["From"] = settings.MAIL_FROM
+    email["To"] = settings.MAIL_USERNAME
 
     email.set_content(
-        '<div>'
+        "<div>"
         f'<h1 style="color: red;">Здравствуйте, {username}, спасибо что Вы с нами 😊</h1>'
         '<img src="https://ic.pics.livejournal.com/dymontiger/54234047/32891743/32891743_original.jpg'
-        '-management-dashboard-ui-design-template-suitable-designing-application-for-android-and-ios-clean-style-app'
+        "-management-dashboard-ui-design-template-suitable-designing-application-for-android-and-ios-clean-style-app"
         '-mobile-free-vector.jpg" width="600">'
-        '</div>',
-        subtype='html'
+        "</div>",
+        subtype="html",
     )
     return email
 

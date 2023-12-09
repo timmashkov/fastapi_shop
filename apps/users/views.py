@@ -1,4 +1,3 @@
-
 from fastapi import APIRouter, Depends, Request, BackgroundTasks
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.responses import HTMLResponse
@@ -23,8 +22,7 @@ router = APIRouter(prefix="/users")
 
 
 @router.get("/", response_model=list[UserResponseSchema])
-async def show_users(session: AsyncSession = Depends(vortex.scoped_session_dependency)
-):
+async def show_users(session: AsyncSession = Depends(vortex.scoped_session_dependency)):
     return await get_users(session=session)
 
 
@@ -91,13 +89,9 @@ async def delete_user(
 @router.get("/dashboard")
 def get_dashboard_report(background_tasks: BackgroundTasks, user=Depends(current_user)):
     # 1400 ms - Клиент ждет
-    #send_mail(user.username)
+    # send_mail(user.username)
     # 500 ms - Задача выполняется на фоне FastAPI в event loop'е или в другом треде
-    #background_tasks.add_task(send_mail, user.username)
+    # background_tasks.add_task(send_mail, user.username)
     # 600 ms - Задача выполняется воркером Celery в отдельном процессе
     send_mail.delay(user.username)
-    return {
-        "status": 200,
-        "data": "Письмо отправлено",
-        "details": None
-    }
+    return {"status": 200, "data": "Письмо отправлено", "details": None}
