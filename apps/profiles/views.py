@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends
+from fastapi_cache.decorator import cache
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from apps.profiles.crud import add_user_profile, edit_user_profile, drop_user_profile
@@ -39,6 +40,7 @@ async def delete_profile(
 
 
 @router.get("/get_profile/{profile_in}")
+@cache(expire=60)
 async def get_profile(
     profile: Profile = Depends(profile_by_id),
     session: AsyncSession = Depends(vortex.scoped_session_dependency),
