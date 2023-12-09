@@ -13,8 +13,12 @@ if TYPE_CHECKING:
 class Order(Base):
     __tablename__ = "order"
 
-    promocode: Mapped[str | None] = mapped_column(String(30), unique=True, nullable=True)
+    promocode: Mapped[str | None] = mapped_column(
+        String(30), unique=True, nullable=True
+    )
     created_at: Mapped[datetime] = mapped_column(
         server_default=func.now(), default=datetime.now
     )
-    products: Mapped[list["Product"]] = relationship(secondary="order_product_link", back_populates="orders")
+    products: Mapped[list["Product"]] = relationship(
+        secondary="order_product_link", back_populates="orders"
+    )

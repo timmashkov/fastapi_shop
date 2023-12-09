@@ -14,8 +14,4 @@ def get_dashboard_report(background_tasks: BackgroundTasks, user=Depends(current
     background_tasks.add_task(send_email_report_dashboard, user.username)
     # 600 ms - Задача выполняется воркером Celery в отдельном процессе
     send_email_report_dashboard.delay(user.username)
-    return {
-        "status": 200,
-        "data": "Письмо отправлено",
-        "details": None
-    }
+    return {"status": 200, "data": "Письмо отправлено", "details": None}

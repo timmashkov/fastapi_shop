@@ -19,7 +19,9 @@ class Product(Base):
 
     user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
     user: Mapped["User"] = relationship("User", back_populates="products")
-    orders: Mapped[list["Order"]] = relationship(secondary="order_product_link", back_populates="products")
+    orders: Mapped[list["Order"]] = relationship(
+        secondary="order_product_link", back_populates="products"
+    )
 
     def __str__(self):
         return (

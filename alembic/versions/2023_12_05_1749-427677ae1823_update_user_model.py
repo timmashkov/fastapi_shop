@@ -23,9 +23,13 @@ def upgrade() -> None:
     op.add_column("user", sa.Column("email", sa.String(length=40), nullable=False))
     op.add_column(
         "user",
-        sa.Column("created_at", sa.DateTime(), server_default=sa.text("now()"), nullable=False),
+        sa.Column(
+            "created_at", sa.DateTime(), server_default=sa.text("now()"), nullable=False
+        ),
     )
-    op.add_column("user", sa.Column("hashed_password", sa.String(length=1024), nullable=False))
+    op.add_column(
+        "user", sa.Column("hashed_password", sa.String(length=1024), nullable=False)
+    )
     op.add_column("user", sa.Column("is_active", sa.Boolean(), nullable=False))
     op.add_column("user", sa.Column("is_superuser", sa.Boolean(), nullable=False))
     op.add_column("user", sa.Column("is_verified", sa.Boolean(), nullable=False))
