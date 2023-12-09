@@ -11,14 +11,14 @@ celery = Celery("tasks", broker="redis://localhost:6379")
 
 def get_email_template_dashboard(username: str):
     email = EmailMessage()
-    email['Subject'] = 'Натрейдил Отчет Дашборд'
+    email['Subject'] = 'Thanx for using my service'
     email['From'] = settings.MAIL_FROM
     email['To'] = settings.MAIL_USERNAME
 
     email.set_content(
         '<div>'
-        f'<h1 style="color: red;">Здравствуйте, {username}, а вот и ваш отчет. Зацените 😊</h1>'
-        '<img src="https://static.vecteezy.com/system/resources/previews/008/295/031/original/custom-relationship'
+        f'<h1 style="color: red;">Здравствуйте, {username}, спасибо что Вы с нами 😊</h1>'
+        '<img src="https://chert-poberi.ru/wp-content/uploads/proga/111/images1/201705/igor7-25051719443344_39.jpg'
         '-management-dashboard-ui-design-template-suitable-designing-application-for-android-and-ios-clean-style-app'
         '-mobile-free-vector.jpg" width="600">'
         '</div>',

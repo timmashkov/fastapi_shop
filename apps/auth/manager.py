@@ -4,7 +4,7 @@ from typing import Optional
 from fastapi import Depends, Request
 from fastapi_users import BaseUserManager, IntegerIDMixin
 
-from apps.auth.utils import get_user_db
+from apps.auth.utils import get_user_db, send_email
 from core.models import User
 
 SECRET = settings.auth_key
@@ -15,6 +15,7 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
     verification_token_secret = SECRET
 
     async def on_after_register(self, user: User, request: Optional[Request] = None):
+        send_email(username=user.username)
         print(f"User {user.id} has registered.")
 
     async def on_after_forgot_password(
