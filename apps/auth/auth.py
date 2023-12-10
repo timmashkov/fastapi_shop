@@ -9,6 +9,9 @@ from core.models import User
 cookie_transport = CookieTransport(cookie_max_age=3600)
 
 SECRET = settings.auth_key
+"""
+Auth main router via fastapi-users
+"""
 
 
 def get_jwt_strategy() -> JWTStrategy:

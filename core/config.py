@@ -7,6 +7,9 @@ load_dotenv()
 
 
 class DbSettings(BaseModel):
+    """
+    DataBase driver settings + db_url
+    """
     db_host: str = os.environ.get("DB_HOST")
     db_name: str = os.environ.get("DB_NAME")
     db_port: str = os.environ.get("DB_PORT")
@@ -17,17 +20,20 @@ class DbSettings(BaseModel):
 
 
 class Settings(BaseSettings):
+    """
+    All api settings
+    """
     auth_key: str = os.environ.get("SECRET_KEY")
     public_key: str = os.environ.get("PUBLIC_KEY")
-
+    # email parameters
     GOOGLE_API_PASS: str = os.environ.get("GOOGLE_API_PASS")
     MAIL_PORT: str = os.environ.get("MAIL_PORT")
     MAIL_FROM: str = os.environ.get("MAIL_FROM")
     MAIL_SERVER: str = os.environ.get("MAIL_SERVER")
     MAIL_USERNAME: str = os.environ.get("MAIL_USERNAME")
-
+    # db settings link
     db: DbSettings = DbSettings()
-
+    # CORS сетап
     origins: list = ["http://127.0.0.1:8000"]
 
 

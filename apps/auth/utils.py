@@ -13,6 +13,11 @@ from core.models import User
 async def get_user_db(
     session: AsyncSession = Depends(vortex.session_dependency),
 ):
+    """
+    Func for working with database
+    :param session:
+    :return:
+    """
     yield SQLAlchemyUserDatabase(session, User)
 
 

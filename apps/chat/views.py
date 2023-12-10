@@ -7,6 +7,11 @@ from core.models import Chat
 
 router = APIRouter(prefix="/chat")
 
+"""
+Using websockets for interactive chat
+creating a class ConnectionManager with custom methods
+"""
+
 
 class ConnectionManager:
     def __init__(self):
@@ -42,6 +47,11 @@ manager = ConnectionManager()
 
 @router.get("/last_messages")
 async def get_last_messages(session: AsyncSession = Depends(vortex.get_scoped_session)):
+    """
+    Getting last 5 messages endpoint
+    :param session:
+    :return:
+    """
     query = select(Chat).order_by(Chat.id.desc()).limit(5)
     result = await session.execute(query)
     answer = result.all()
@@ -51,6 +61,12 @@ async def get_last_messages(session: AsyncSession = Depends(vortex.get_scoped_se
 
 @router.websocket("/ws/{client_id}")
 async def websocket_endpoint(websocket: WebSocket, client_id: int):
+    """
+    Async func for making chat
+    :param websocket:
+    :param client_id:
+    :return:
+    """
     await manager.connect(websocket)
     try:
         while True:
