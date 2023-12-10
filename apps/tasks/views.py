@@ -1,8 +1,8 @@
-from fastapi import APIRouter, BackgroundTasks, Depends
+from fastapi import APIRouter, BackgroundTasks, Depends, Form
 from fastapi_cache.decorator import cache
 
 from apps.auth import current_user
-from apps.tasks.mail import send_email_report_dashboard
+from apps.tasks.mail import send_email_report_dashboard, get_file
 
 router = APIRouter(prefix="/tasks")
 
@@ -17,3 +17,8 @@ def get_dashboard_report(background_tasks: BackgroundTasks, user=Depends(current
     # 600 ms - Задача выполняется воркером Celery в отдельном процессе
     send_email_report_dashboard.delay(user.username)
     return {"status": 200, "data": "Письмо отправлено", "details": None}
+
+
+@router.post("/add_file")
+async def add_file(text: str):
+    return await get_file(data=text)
