@@ -1,10 +1,15 @@
-FROM python:alpine
+FROM python:3.12
 
-WORKDIR /app
+RUN mkdir /fastapi_shop
+
+WORKDIR /fastapi_shop
+
+COPY requirements.txt .
+
+RUN pip install -r requirements.txt
 
 COPY . .
 
-RUN pip3 install --upgrade setuptools --no-cache
-RUN pip3 install -r requirements.txt
+WORKDIR /fastapi_shop
 
-CMD ["python", "main.py"]
+CMD gunicorn main:app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind=0.0.0.0:8000
