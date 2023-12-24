@@ -14,6 +14,7 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
     """
     Main fastapi-users class with main methods
     """
+
     reset_password_token_secret = SECRET
     verification_token_secret = SECRET
 

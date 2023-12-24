@@ -10,6 +10,7 @@ class DbSettings(BaseModel):
     """
     DataBase driver settings + db_url
     """
+
     db_host: str = os.environ.get("DB_HOST")
     db_name: str = os.environ.get("DB_NAME")
     db_port: str = os.environ.get("DB_PORT")
@@ -23,6 +24,7 @@ class Settings(BaseSettings):
     """
     All api settings
     """
+
     auth_key: str = os.environ.get("SECRET_KEY")
     public_key: str = os.environ.get("PUBLIC_KEY")
     # email parameters
@@ -35,6 +37,8 @@ class Settings(BaseSettings):
     db: DbSettings = DbSettings()
     # CORS сетап
     origins: list = ["http://127.0.0.1:8000"]
+    redis_port: str = os.environ.get("REDIS_PORT")
+    redis_host: str = os.environ.get("REDIS_HOST")
 
 
 settings = Settings()

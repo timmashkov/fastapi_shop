@@ -13,5 +13,3 @@ async def test_register():
             "username": "string",
         },
     )
-
-

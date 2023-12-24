@@ -6,7 +6,7 @@ from celery import Celery
 from core.config import settings
 
 
-celery = Celery("tasks", broker="redis://localhost:6379")
+celery = Celery("tasks", broker=f"redis://{settings.redis_host}:{settings.redis_port}")
 
 
 def get_email_template_dashboard(username: str):
@@ -39,4 +39,4 @@ def send_email_report_dashboard(username: str):
 async def get_file(data: str):
     with open("text.txt", "w", encoding="UTF-8") as file:
         file.write(data)
-    return {"message": 'Ok'}
+    return {"message": "Ok"}

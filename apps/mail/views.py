@@ -63,4 +63,3 @@ async def send_file(
     background_tasks.add_task(fm.send_message, message)
 
     return JSONResponse(status_code=200, content={"message": "email has been sent"})
-

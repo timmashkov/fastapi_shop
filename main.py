@@ -1,5 +1,5 @@
 import uvicorn
-from fastapi import FastAPI, Request
+from fastapi import FastAPI
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
 from redis import asyncio as aioredis
@@ -37,7 +37,9 @@ app.add_middleware(
 @app.on_event("startup")
 async def startup():
     redis = aioredis.from_url(
-        "redis://localhost", encoding="utf-8", decode_response=True
+        f"redis://{settings.redis_host}:{settings.redis_port}",
+        encoding="utf-8",
+        decode_response=True,
     )
     FastAPICache.init(RedisBackend(redis), prefix="fastapi-cache")
 
