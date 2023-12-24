@@ -1,47 +1,30 @@
 import asyncio
 from typing import AsyncGenerator
-
-import pytest
+import pytest_asyncio
 from fastapi.testclient import TestClient
 from httpx import AsyncClient
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
-from sqlalchemy.pool import NullPool
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.database import vortex
 from core.models.base import Base
+from core.test_database import test_database
 from main import app
 
 # DATABASE
-DATABASE_URL_TEST = f"sqlite+aiosqlite:///./test.db"
-engine_test = create_async_engine(DATABASE_URL_TEST, poolclass=NullPool)
 
-async_session_maker = async_sessionmaker(
-    engine_test, class_=AsyncSession, expire_on_commit=False
-)
-Base.metadata.bind = engine_test
+Base.metadata.bind = test_database.test_engine
 
 
-async def override_get_async_session() -> AsyncGenerator[AsyncSession, None]:
-    async with async_session_maker() as session:
+async def override_scoped_session_dependency() -> AsyncGenerator[AsyncSession, None]:
+    async with test_database.test_session_maker() as session:
         yield session
 
-
-app.dependency_overrides[vortex.session_dependency] = override_get_async_session
-
-
-@pytest.fixture(autouse=True, scope="session")
-async def prepare_database():
-    async with engine_test.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
-    yield
-    async with engine_test.begin() as conn:
-        await conn.run_sync(Base.metadata.drop_all)
+app.dependency_overrides[vortex.scoped_session_dependency] = override_scoped_session_dependency
 
 
-# SETUP
-@pytest.fixture(scope="session")
+@pytest_asyncio.fixture(scope="session")
 def event_loop(request):
-    """Create an instance of the default event loop for each test case."""
+    """Creating event loop for tests"""
     loop = asyncio.get_event_loop_policy().new_event_loop()
     yield loop
     loop.close()
@@ -50,7 +33,7 @@ def event_loop(request):
 client = TestClient(app)
 
 
-@pytest.fixture(scope="session")
-async def ac() -> AsyncGenerator[AsyncClient, None]:
+@pytest_asyncio.fixture(scope="session")
+async def async_client() -> AsyncGenerator[AsyncClient, None]:
     async with AsyncClient(app=app, base_url="http://test") as ac:
         yield ac
