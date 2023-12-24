@@ -8,12 +8,7 @@ services:
       - 5435
     env_file:
       - .env_prod
-  redis:
-    image: redis:7
-    container_name: shop_redis
-    command: --port 5370
-    expose:
-      - 5370
+
   shop_app:
     build:
       context: .
@@ -23,9 +18,3 @@ services:
       - 1488:8000
     depends_on:
       - db
-      - redis
-    command: ["/fastapi_shop/docker/app.sh"]
-  celery:
-    build:
-      context: .
-
