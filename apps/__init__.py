@@ -7,10 +7,6 @@ from .orders.views import router as orders_router
 from .auth import router as auth_router
 from .tasks.views import router as task_router
 from .mail.views import router as mail_router
-
-# аппка с темплейтами
-from .pages.router import router as page_router
-
 # аппка с websockets
 from .chat.views import router as chat_router
 
@@ -23,6 +19,5 @@ router.include_router(router=posts_router, tags=["Posts"])
 router.include_router(router=orders_router, tags=["Orders"])
 router.include_router(router=auth_router, tags=["Auth"])
 router.include_router(router=task_router, tags=["Tasks"])
-router.include_router(router=page_router, tags=["Pages"])
 router.include_router(router=chat_router, tags=["Chat"])
 router.include_router(router=mail_router, tags=["Mail"])
