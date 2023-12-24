@@ -1,22 +1,31 @@
+from contextlib import asynccontextmanager
+
 import uvicorn
 from fastapi import FastAPI
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
 from redis import asyncio as aioredis
 from starlette.middleware.cors import CORSMiddleware
-from starlette.staticfiles import StaticFiles
 
 from core.config import settings
 
 from apps import router as apps_router
 
 
-app = FastAPI(title="Learning FastAPI")
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    redis = aioredis.from_url(
+        f"redis://{settings.redis_host}:{settings.redis_port}",
+        encoding="utf-8",
+        decode_response=True,
+    )
+    FastAPICache.init(RedisBackend(redis), prefix="fastapi-cache")
+    yield
+
+
+app = FastAPI(title="Learning FastAPI", lifespan=lifespan)
 # TODO: удалить apps/users
 app.include_router(apps_router)
-
-
-app.mount("/static", StaticFiles(directory="apps/static"), name="static")
 
 
 app.add_middleware(
@@ -32,16 +41,6 @@ app.add_middleware(
         "Authorization",
     ],
 )
-
-
-@app.on_event("startup")
-async def startup():
-    redis = aioredis.from_url(
-        f"redis://{settings.redis_host}:{settings.redis_port}",
-        encoding="utf-8",
-        decode_response=True,
-    )
-    FastAPICache.init(RedisBackend(redis), prefix="fastapi-cache")
 
 
 if __name__ == "__main__":

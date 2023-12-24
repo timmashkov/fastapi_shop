@@ -6,7 +6,7 @@ import os
 load_dotenv()
 
 
-class DbSettings(BaseModel):
+class DbSettings(BaseSettings):
     """
     DataBase driver settings + db_url
     """
@@ -18,6 +18,16 @@ class DbSettings(BaseModel):
     db_pass: str = os.environ.get("DB_PASS")
     url: str = f"postgresql+asyncpg://{db_user}:{db_pass}@{db_host}:{db_port}/{db_name}"
     echo: bool = False
+
+
+class TestConfig(BaseSettings):
+    db_host_test: str = os.environ.get("DB_HOST_TEST")
+    db_name_test: str = os.environ.get("DB_NAME_TEST")
+    db_port_test: str = os.environ.get("DB_PORT_TEST")
+    db_user_test: str = os.environ.get("DB_USER_TEST")
+    db_pass_test: str = os.environ.get("DB_PASS_TEST")
+    test_url: str = f"postgresql+asyncpg://{db_user_test}:{db_pass_test}@{db_host_test}:{db_port_test}/{db_name_test}"
+    echo: bool = True
 
 
 class Settings(BaseSettings):
@@ -37,8 +47,11 @@ class Settings(BaseSettings):
     db: DbSettings = DbSettings()
     # CORS сетап
     origins: list = ["http://127.0.0.1:8000"]
+    # Redis
     redis_port: str = os.environ.get("REDIS_PORT")
     redis_host: str = os.environ.get("REDIS_HOST")
+    # TestConfig
+    test_config: TestConfig = TestConfig()
 
 
 settings = Settings()
