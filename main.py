@@ -32,7 +32,6 @@ async def lifespan(app: FastAPI):
     yield
     async with test_database.test_engine.begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)
-    yield
 
 
 app = FastAPI(title="Learning FastAPI", lifespan=lifespan)
