@@ -22,16 +22,12 @@ async def lifespan(app: FastAPI):
         decode_response=True,
     )
     FastAPICache.init(RedisBackend(redis), prefix="fastapi-cache")
+    async with test_database.test_engine.begin() as session:
+        await session.run_sync(Base.metadata.create_all)
     yield
+    async with test_database.test_engine.begin() as session:
+        await session.run_sync(Base.metadata.drop_all)
 
-
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    async with test_database.test_engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
-    yield
-    async with test_database.test_engine.begin() as conn:
-        await conn.run_sync(Base.metadata.drop_all)
 
 
 app = FastAPI(title="Learning FastAPI", lifespan=lifespan)
