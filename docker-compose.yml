@@ -9,6 +9,15 @@ services:
     env_file:
       - .env_prod
 
+  redis:
+    image: redis:7
+    container_name: redis_shop
+    command: --port 5370
+    expose:
+      - 5370
+    env_file:
+      - .env_prod
+
   shop_app:
     build:
       context: .
@@ -18,3 +27,26 @@ services:
       - 1488:8000
     depends_on:
       - db
+      - redis
+
+  celery:
+    build:
+      context: .
+    container_name: celery_shop
+    env_file:
+      - .env_prod
+    depends_on:
+      - redis
+
+
+  flower:
+    build:
+      context: .
+    container_name: flower_shop
+    env_file:
+      - .env_prod
+    depends_on:
+      - redis
+      - celery
+    ports:
+      - 9000:5555
