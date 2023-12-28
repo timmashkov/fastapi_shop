@@ -24,29 +24,7 @@ services:
     env_file: .env_prod
     container_name: fastapi_shop
     ports:
-      - 1488:8000
+      - '1488:8000'
     depends_on:
       - db
       - redis
-
-  celery:
-    build:
-      context: .
-    container_name: celery_shop
-    env_file:
-      - .env_prod
-    depends_on:
-      - redis
-
-
-  flower:
-    build:
-      context: .
-    container_name: flower_shop
-    env_file:
-      - .env_prod
-    depends_on:
-      - redis
-      - celery
-    ports:
-      - 9000:5555
