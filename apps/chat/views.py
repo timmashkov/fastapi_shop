@@ -47,7 +47,7 @@ manager = ConnectionManager()
 
 @router.get("/last_messages")
 async def get_last_messages(
-    session: AsyncSession = Depends(vortex.get_scoped_session),
+    session: AsyncSession = Depends(vortex.scoped_session_dependency),
 ) -> list:
     """
     Getting last 5 messages endpoint

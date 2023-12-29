@@ -12,7 +12,7 @@ from core.models import User
 
 
 async def get_user_db(
-    session: AsyncSession = Depends(vortex.session_dependency),
+    session: AsyncSession = Depends(vortex.scoped_session_dependency),
 ) -> AsyncGenerator:
     """
     Func for working with database
