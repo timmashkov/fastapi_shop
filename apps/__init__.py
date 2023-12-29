@@ -7,6 +7,7 @@ from .orders.views import router as orders_router
 from .auth import router as auth_router
 from .tasks.views import router as task_router
 from .mail.views import router as mail_router
+
 # аппка с websockets
 from .chat.views import router as chat_router
 

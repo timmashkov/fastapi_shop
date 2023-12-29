@@ -22,7 +22,7 @@ async def get_orders(session: AsyncSession) -> list[Order]:
     return list(orders)
 
 
-async def get_order(session: AsyncSession, order_id: int):
+async def get_order(session: AsyncSession, order_id: int) -> Order | dict:
     """
     Асинк функция выбирает значение таблицы Product по id, и возвращает его
     :param session:
@@ -44,7 +44,7 @@ async def create_order(session: AsyncSession, promocode: str | None = None) -> O
     return order
 
 
-async def drop_order(order: Order, session: AsyncSession):
+async def drop_order(order: Order, session: AsyncSession) -> dict:
     try:
         await session.delete(order)
         await session.commit()

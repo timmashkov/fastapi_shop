@@ -6,12 +6,13 @@ from starlette import status
 
 from apps.profiles.crud import get_profile
 from core.database import vortex
+from core.models import Profile
 
 
 async def profile_by_id(
     profile_in: Annotated[int, Path],
     session: AsyncSession = Depends(vortex.scoped_session_dependency),
-):
+) -> Profile:
     profile = await get_profile(session=session, profile_id=profile_in)
     if profile:
         return profile

@@ -14,27 +14,27 @@ creating a class ConnectionManager with custom methods
 
 
 class ConnectionManager:
-    def __init__(self):
+    def __init__(self) -> None:
         self.active_connections: list[WebSocket] = []
 
-    async def connect(self, websocket: WebSocket):
+    async def connect(self, websocket: WebSocket) -> None:
         await websocket.accept()
         self.active_connections.append(websocket)
 
-    def disconnect(self, websocket: WebSocket):
+    def disconnect(self, websocket: WebSocket) -> None:
         self.active_connections.remove(websocket)
 
-    async def send_personal_message(self, message: str, websocket: WebSocket):
+    async def send_personal_message(self, message: str, websocket: WebSocket) -> None:
         await websocket.send_text(message)
 
-    async def broadcast(self, message: str, add_to_db: bool):
+    async def broadcast(self, message: str, add_to_db: bool) -> None:
         if add_to_db:
             await self.add_messages_to_db(message=message)
         for connection in self.active_connections:
             await connection.send_text(message)
 
     @staticmethod
-    async def add_messages_to_db(message: str):
+    async def add_messages_to_db(message: str) -> None:
         session = vortex.session_factory()
         async with session as sess:
             stmt = Chat(message=message)
@@ -46,7 +46,9 @@ manager = ConnectionManager()
 
 
 @router.get("/last_messages")
-async def get_last_messages(session: AsyncSession = Depends(vortex.get_scoped_session)):
+async def get_last_messages(
+    session: AsyncSession = Depends(vortex.get_scoped_session),
+) -> list:
     """
     Getting last 5 messages endpoint
     :param session:
@@ -60,7 +62,7 @@ async def get_last_messages(session: AsyncSession = Depends(vortex.get_scoped_se
 
 
 @router.websocket("/ws/{client_id}")
-async def websocket_endpoint(websocket: WebSocket, client_id: int):
+async def websocket_endpoint(websocket: WebSocket, client_id: int) -> None:
     """
     Async func for making chat
     :param websocket:

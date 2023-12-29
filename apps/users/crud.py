@@ -37,7 +37,7 @@ async def add_user(session: AsyncSession, user_in: UserAddingSchema) -> User:
     return users
 
 
-async def get_user(session: AsyncSession, username: str):
+async def get_user(session: AsyncSession, username: str) -> User | dict:
     """
     Функция для выбора юзера по id
     :param session:
@@ -53,7 +53,9 @@ async def get_user(session: AsyncSession, username: str):
         return {"error": f"There is no {username}"}
 
 
-async def change_user(username: str, session: AsyncSession, data: UserAddingSchema):
+async def change_user(
+    username: str, session: AsyncSession, data: UserAddingSchema
+) -> User:
     """
     Функция для изменения данных юзера
     :param username:
@@ -73,7 +75,7 @@ async def change_user(username: str, session: AsyncSession, data: UserAddingSche
     return answer
 
 
-async def drop_user(session: AsyncSession, user: User) -> dict | None:
+async def drop_user(session: AsyncSession, user: User) -> dict:
     """
     Функция удаления юзера
     :param session:
@@ -88,7 +90,7 @@ async def drop_user(session: AsyncSession, user: User) -> dict | None:
         return {"message": "something went wrong", "error": e}
 
 
-async def get_user_with_profile(username: str, session: AsyncSession):
+async def get_user_with_profile(username: str, session: AsyncSession) -> dict | None:
     """
     Функция возврата юзера и связанного с ним профиля
     вместо join попробовал joinload(гораздо удобнее)

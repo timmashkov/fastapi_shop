@@ -6,12 +6,13 @@ from starlette import status
 
 from apps.posts.crud import get_post
 from core.database import vortex
+from core.models import Post
 
 
 async def post_by_id(
     post_in: Annotated[int, Path],
     session: AsyncSession = Depends(vortex.scoped_session_dependency),
-):
+) -> Post:
     post = await get_post(session=session, post_id=post_in)
     if post:
         return post
