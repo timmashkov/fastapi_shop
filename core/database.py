@@ -1,3 +1,5 @@
+import contextlib
+
 from sqlalchemy.ext.asyncio import (
     create_async_engine,
     async_sessionmaker,
@@ -13,17 +15,20 @@ class DataBase:
         """
         Создаю асинхронный движок для алхимии
         """
-        self.engine = create_async_engine(url=url, echo=echo)
-        self.session_factory = async_sessionmaker(
-            bind=self.engine, autoflush=False, autocommit=False, expire_on_commit=False
+        self._engine = create_async_engine(url=url, echo=echo)
+        self._session_factory = async_sessionmaker(
+            bind=self._engine, autoflush=False, autocommit=False, expire_on_commit=False
         )
 
     def get_scoped_session(self):
         """
         Метод для работы с асинхронной БД
         """
+        if self._engine is None:
+            raise Exception("DatabaseSessionManager is not initialized")
+
         session = async_scoped_session(
-            session_factory=self.session_factory, scopefunc=current_task
+            session_factory=self._session_factory, scopefunc=current_task
         )
         return session
 
@@ -31,7 +36,7 @@ class DataBase:
         """
         Метод для работы с асинхронной БД с контекстным менеджером
         """
-        session = self.session_factory()
+        session = self._session_factory()
         async with session as sess:
             yield sess
             await session.close()
@@ -40,9 +45,12 @@ class DataBase:
         """
         Метод для работы с асинхронной БД без контекстного менеджера
         """
-        session = self.get_scoped_session()
-        yield session
-        await session.close()
+        try:
+            session = self.get_scoped_session()
+            yield session
+            await session.close()
+        except Exception:
+            raise Exception("DatabaseSessionManager is not initialized")
 
 
 vortex = DataBase(settings.db.url, settings.db.echo)
