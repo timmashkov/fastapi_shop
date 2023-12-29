@@ -26,9 +26,15 @@ class User(SQLAlchemyBaseUserTable[int], Base):
     is_superuser: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     is_verified: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
 
-    post_link: Mapped[list["Post"]] = relationship("Post", back_populates="user_link")
-    profiles: Mapped["Profile"] = relationship("Profile", back_populates="owner")
-    products: Mapped[list["Product"]] = relationship("Product", back_populates="user")
+    post_link: Mapped[list["Post"]] = relationship("Post",
+                                                   back_populates="user_link",
+                                                   cascade="all, delete-orphan")
+    profiles: Mapped["Profile"] = relationship("Profile",
+                                               back_populates="owner",
+                                               cascade="all, delete-orphan",
+                                               passive_deletes=True,
+                                               passive_updates=True)
+
 
     def __str__(self):
         return f"{self.__class__.__name__}(username={self.username})"

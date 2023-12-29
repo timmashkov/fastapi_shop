@@ -34,10 +34,3 @@ def send_email_report_dashboard(username: str) -> None:
     with smtplib.SMTP_SSL(settings.MAIL_SERVER, settings.MAIL_PORT) as server:
         server.login(settings.MAIL_USERNAME, settings.GOOGLE_API_PASS)
         server.send_message(email)
-
-
-@celery.task
-async def get_file(data: str) -> json:
-    with open("text.txt", "w", encoding="UTF-8") as file:
-        file.write(data)
-    return {"message": "Ok"}

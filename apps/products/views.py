@@ -15,7 +15,9 @@ from core.database import vortex
 router = APIRouter(prefix="/products")
 
 
-@router.get("/", response_model=list[Product])
+@router.get("/take_products",
+            response_model=list[Product],
+            description="Show products")
 @cache(expire=60)
 async def take_products(
     session: AsyncSession = Depends(vortex.scoped_session_dependency),
@@ -23,7 +25,9 @@ async def take_products(
     return await get_products(session=session)
 
 
-@router.post("/add", response_model=Product)
+@router.post("/add_product",
+             response_model=Product,
+             description="Create new product")
 async def add_product(
     product_in: ProductCreate,
     session: AsyncSession = Depends(vortex.scoped_session_dependency),
@@ -31,10 +35,13 @@ async def add_product(
     return await create_product(session=session, data=product_in)
 
 
-@router.get("/{id}/", response_model=Product)
+@router.get("/{id}/",
+            response_model=Product,
+            description="Show specific product")
 @cache(expire=60)
 async def take_product(
-    id: int, session: AsyncSession = Depends(vortex.scoped_session_dependency)
+        id: int,
+        session: AsyncSession = Depends(vortex.scoped_session_dependency)
 ):
     product = await get_product(session=session, product_id=id)
     if product:
@@ -45,7 +52,8 @@ async def take_product(
     )
 
 
-@router.put("/{id_upd}")
+@router.put("/upd_product/{id_upd}",
+            description="Change product info")
 async def upd_product(
     product_upd: ProductUpdatePartial,
     session: AsyncSession = Depends(vortex.scoped_session_dependency),
@@ -56,7 +64,8 @@ async def upd_product(
     )
 
 
-@router.delete("/{id}")
+@router.delete("/del_product/{id}",
+               description="Delete product")
 async def del_product(
     product: Product = Depends(product_by_id),
     session: AsyncSession = Depends(vortex.scoped_session_dependency),

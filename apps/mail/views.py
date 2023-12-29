@@ -9,7 +9,7 @@ from apps.mail.schemas import EmailSchema
 router = APIRouter(prefix="/mail")
 
 
-@router.post("/email")
+@router.post("/email", description="Just sending email")
 async def simple_send(email: EmailSchema, text: str) -> JSONResponse:
     html = f"""<p>{text}</p> """
 
@@ -26,7 +26,7 @@ async def simple_send(email: EmailSchema, text: str) -> JSONResponse:
 
 
 # as background task
-@router.post("/email_background")
+@router.post("/email_background", description="Sending email as background")
 async def send_in_background(
     background_tasks: BackgroundTasks, email: EmailSchema
 ) -> JSONResponse:
@@ -44,7 +44,7 @@ async def send_in_background(
     return JSONResponse(status_code=200, content={"message": "email has been sent"})
 
 
-@router.post("/file")
+@router.post("/file", description="Sending file via email")
 async def send_file(
     background_tasks: BackgroundTasks,
     file: UploadFile = File(...),
