@@ -12,7 +12,9 @@ from .schemas import PostOutput, PostInput
 router = APIRouter(prefix="/post")
 
 
-@router.put("/add_post", response_model=PostOutput)
+@router.put("/add_post",
+            response_model=PostOutput,
+            description="Write new post")
 async def add_post(
     post_in: PostInput,
     session: AsyncSession = Depends(vortex.scoped_session_dependency),
@@ -20,16 +22,17 @@ async def add_post(
     return await create_post(session=session, data=post_in)
 
 
-@router.get("/get_post")
+@router.get("/get_post",
+            description="Show post")
 @cache(expire=60)
 async def take_post(
     post_in: Post = Depends(post_by_id),
-    session: AsyncSession = Depends(vortex.scoped_session_dependency),
 ):
     return post_in
 
 
-@router.delete("/del_post")
+@router.delete("/del_post",
+               description="Delete post")
 async def delete_post(
     post_in: Post = Depends(post_by_id),
     session: AsyncSession = Depends(vortex.scoped_session_dependency),

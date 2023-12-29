@@ -13,5 +13,6 @@ class Post(Base):
     title: Mapped[str] = mapped_column(String(100), nullable=False, unique=False)
     body: Mapped[str] = mapped_column(Text, default="", server_default="")
 
-    user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
-    user_link: Mapped["User"] = relationship("User", back_populates="post_link")
+    user_id: Mapped[int] = mapped_column(ForeignKey("user.id", ondelete="CASCADE"))
+    user_link: Mapped["User"] = relationship("User",
+                                             back_populates="post_link")

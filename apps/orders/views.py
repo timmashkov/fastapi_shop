@@ -12,7 +12,7 @@ from core.models import Order
 router = APIRouter(prefix="/orders")
 
 
-@router.get("/show_orders")
+@router.get("/show_orders", description="Show all orders")
 @cache(expire=60)
 async def show_orders(
     session: AsyncSession = Depends(vortex.scoped_session_dependency),
@@ -20,15 +20,14 @@ async def show_orders(
     return await get_orders(session=session)
 
 
-@router.get("/get_order")
+@router.get("/get_order", description="Show one orders")
 async def get_order(
     order: Order = Depends(order_by_id),
-    session: AsyncSession = Depends(vortex.scoped_session_dependency),
 ):
     return order
 
 
-@router.post("/add_order")
+@router.post("/add_order", description="Create new order")
 async def add_order(
     promocode: str | None,
     session: AsyncSession = Depends(vortex.scoped_session_dependency),
@@ -36,7 +35,7 @@ async def add_order(
     return await create_order(promocode=promocode, session=session)
 
 
-@router.delete("/del_order")
+@router.delete("/del_order", description="Delete order")
 async def del_order(
     order: Order = Depends(order_by_id),
     session: AsyncSession = Depends(vortex.scoped_session_dependency),

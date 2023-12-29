@@ -1,4 +1,4 @@
-from sqlalchemy import Table, Column, ForeignKey, Integer, UniqueConstraint
+from sqlalchemy import ForeignKey, UniqueConstraint
 from sqlalchemy.orm import mapped_column, Mapped
 
 from .base import Base
@@ -10,8 +10,7 @@ class OrderProductLink(Base):
         UniqueConstraint("order_id", "product_id", name="uniq_index_order_product"),
     )
 
-    id: Mapped[int] = mapped_column(primary_key=True)
     order_id: Mapped[int] = mapped_column(ForeignKey("order.id"))
     product_id: Mapped[int] = mapped_column(ForeignKey("product.id"))
     count: Mapped[int] = mapped_column(default=1, server_default="1")
-    # fixed_price: Mapped[int] = mapped_column(default=1)
+    fixed_price: Mapped[int] = mapped_column(default=0, server_default="0")

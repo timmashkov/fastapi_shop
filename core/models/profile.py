@@ -14,5 +14,6 @@ class Profile(Base):
     last_name: Mapped[str | None] = mapped_column(String(20), nullable=True)
     bio: Mapped[str | None] = mapped_column(Text, nullable=True)
 
-    user_id: Mapped[int] = mapped_column(ForeignKey("user.id"), unique=True)
-    owner: Mapped["User"] = relationship("User", back_populates="profiles")
+    user_id: Mapped[int] = mapped_column(ForeignKey("user.id", ondelete="CASCADE"), unique=True)
+    owner: Mapped["User"] = relationship("User",
+                                         back_populates="profiles")
