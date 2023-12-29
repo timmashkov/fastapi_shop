@@ -1,5 +1,6 @@
 import smtplib
 from email.message import EmailMessage
+from typing import AsyncGenerator
 
 from fastapi import Depends
 from fastapi_users_db_sqlalchemy import SQLAlchemyUserDatabase
@@ -12,7 +13,7 @@ from core.models import User
 
 async def get_user_db(
     session: AsyncSession = Depends(vortex.session_dependency),
-):
+) -> AsyncGenerator:
     """
     Func for working with database
     :param session:
@@ -21,7 +22,7 @@ async def get_user_db(
     yield SQLAlchemyUserDatabase(session, User)
 
 
-def get_email(username: str):
+def get_email(username: str) -> EmailMessage:
     email = EmailMessage()
     email["Subject"] = "Thanx for using my service"
     email["From"] = settings.MAIL_FROM
@@ -39,7 +40,7 @@ def get_email(username: str):
     return email
 
 
-def send_email(username: str):
+def send_email(username: str) -> None:
     email = get_email(username)
     with smtplib.SMTP_SSL(settings.MAIL_SERVER, settings.MAIL_PORT) as server:
         server.login(settings.MAIL_USERNAME, settings.GOOGLE_API_PASS)

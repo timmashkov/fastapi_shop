@@ -2,6 +2,7 @@ import smtplib
 from email.message import EmailMessage
 
 from celery import Celery
+from pydantic import json
 
 from core.config import settings
 
@@ -9,7 +10,7 @@ from core.config import settings
 celery = Celery("tasks", broker=f"redis://{settings.redis_host}:{settings.redis_port}")
 
 
-def get_email_template_dashboard(username: str):
+def get_email_template_dashboard(username: str) -> EmailMessage:
     email = EmailMessage()
     email["Subject"] = "Thanx for using my service"
     email["From"] = settings.MAIL_FROM
@@ -28,7 +29,7 @@ def get_email_template_dashboard(username: str):
 
 
 @celery.task
-def send_email_report_dashboard(username: str):
+def send_email_report_dashboard(username: str) -> None:
     email = get_email_template_dashboard(username)
     with smtplib.SMTP_SSL(settings.MAIL_SERVER, settings.MAIL_PORT) as server:
         server.login(settings.MAIL_USERNAME, settings.GOOGLE_API_PASS)
@@ -36,7 +37,7 @@ def send_email_report_dashboard(username: str):
 
 
 @celery.task
-async def get_file(data: str):
+async def get_file(data: str) -> json:
     with open("text.txt", "w", encoding="UTF-8") as file:
         file.write(data)
     return {"message": "Ok"}

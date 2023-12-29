@@ -1,8 +1,8 @@
-from sqlalchemy import update, Result, delete, select
+from sqlalchemy import update, Result, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from apps.profiles.schemas import ProfileAddingSchema
-from core.models import Profile, User
+from core.models import Profile
 
 
 async def add_user_profile(
@@ -21,7 +21,7 @@ async def add_user_profile(
 
 async def edit_user_profile(
     first_name: str, session: AsyncSession, data: ProfileAddingSchema
-):
+) -> dict:
     stmt = (
         update(Profile)
         .where(Profile.first_name == first_name)
@@ -35,12 +35,12 @@ async def edit_user_profile(
         )
     )
     result: Result = await session.execute(stmt)
-    answer = result.scalars().all()
+    answer = result.first()
     await session.commit()
-    return answer
+    return answer._asdict()
 
 
-async def drop_user_profile(session: AsyncSession, profile: Profile):
+async def drop_user_profile(session: AsyncSession, profile: Profile) -> dict:
     try:
         await session.delete(profile)
         await session.commit()
@@ -49,7 +49,7 @@ async def drop_user_profile(session: AsyncSession, profile: Profile):
         return {"message": "something went wrong", "error": e}
 
 
-async def get_profile(session: AsyncSession, profile_id: int):
+async def get_profile(session: AsyncSession, profile_id: int) -> Profile | dict:
     stmt = select(Profile).where(Profile.id == profile_id)
     result: Result = await session.execute(stmt)
     answer = result.scalars().one_or_none()
