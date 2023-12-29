@@ -1,21 +1,15 @@
 import asyncio
-from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 
 import pytest_asyncio
-from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from httpx import AsyncClient
-from sqlalchemy import NullPool
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
+from sqlalchemy.ext.asyncio import AsyncSession
 
-from core.config import settings
 from core.database import vortex
 from core.models.base import Base
 from core.test_database import test_database
 from main import app
-
-# DATABASE
 
 
 Base.metadata.bind = test_database
@@ -28,7 +22,6 @@ async def override_session_dependency() -> AsyncGenerator[AsyncSession, None]:
 app.dependency_overrides[vortex.session_dependency] = override_session_dependency
 
 
-# SETUP
 @pytest_asyncio.fixture(scope='session')
 def event_loop(request):
     """Create an instance of the default event loop for each test case."""
