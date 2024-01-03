@@ -12,18 +12,19 @@ from core.test_database import test_database
 from main import app
 
 
-#Base.metadata.bind = test_database.test_engine
+Base.metadata.bind = test_database.test_engine
 
 
 async def override_session_dependency() -> AsyncGenerator[AsyncSession, None]:
     async with test_database.test_session_maker() as session:
         yield session
+        await session.close()
 
 
-app.dependency_overrides[vortex.scoped_session_dependency] = override_session_dependency
+app.dependency_overrides[vortex.session_dependency] = override_session_dependency
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def event_loop(request):
     """Create an instance of the default event loop for each test case."""
     loop = asyncio.get_event_loop_policy().new_event_loop()
@@ -31,18 +32,13 @@ def event_loop(request):
     loop.close()
 
 
-@pytest.fixture(scope="session")
-def create_db():
-    from alembic import context, command
-    from core.config import settings
-
-    config = context.config
-    config.set_main_option("sqlalchemy.url", settings.test_config.test_url)
-
-    command.upgrade(config, "head")
+@pytest.fixture(autouse=True, scope="session")
+async def create_db():
+    async with test_database.test_engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
     yield
-    print("Test revisions done!")
-    command.downgrade(config, "base")
+    async with test_database.test_engine.begin() as conn:
+        await conn.run_sync(Base.metadata.drop_all)
 
 
 client = TestClient(app)

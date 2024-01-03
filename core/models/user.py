@@ -10,7 +10,6 @@ from core.models.base import Base
 if TYPE_CHECKING:
     from .post import Post
     from .profile import Profile
-    from .product import Product
 
 
 class User(SQLAlchemyBaseUserTable[int], Base):
@@ -34,7 +33,6 @@ class User(SQLAlchemyBaseUserTable[int], Base):
                                                cascade="all, delete-orphan",
                                                passive_deletes=True,
                                                passive_updates=True)
-
 
     def __str__(self):
         return f"{self.__class__.__name__}(username={self.username})"
