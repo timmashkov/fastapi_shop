@@ -2,12 +2,11 @@ import asyncio
 from typing import AsyncGenerator
 
 import pytest
-from fastapi.testclient import TestClient
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.database import vortex
-from core.models.base import Base
+from core.models import Base
 from core.test_database import test_database
 from main import app
 
@@ -41,10 +40,7 @@ async def create_db():
         await conn.run_sync(Base.metadata.drop_all)
 
 
-client = TestClient(app)
-
-
-@pytest.fixture
+@pytest.fixture(scope="function")
 async def ac() -> AsyncGenerator[AsyncClient, None]:
     async with AsyncClient(app=app, base_url="http://test") as ac:
         yield ac
