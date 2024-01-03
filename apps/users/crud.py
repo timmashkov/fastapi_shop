@@ -8,7 +8,7 @@ from sqlalchemy.engine import Result
 from sqlalchemy import select, update
 from sqlalchemy.orm import joinedload
 from sqlalchemy.ext.asyncio import AsyncSession
-from core.models import User, Profile
+from core.models import User
 from .schemas import UserAddingSchema
 
 
@@ -22,19 +22,6 @@ async def get_users(session: AsyncSession) -> list[User]:
     result: Result = await session.execute(stmt)
     users = result.scalars().all()
     return list(users)
-
-
-async def add_user(session: AsyncSession, user_in: UserAddingSchema) -> User:
-    """
-    Функция добавления юзера
-    :param session:
-    :param user_in:
-    :return: users
-    """
-    users = User(**user_in.model_dump())
-    session.add(users)
-    await session.commit()
-    return users
 
 
 async def get_user(session: AsyncSession, username: str) -> User | dict:
@@ -115,20 +102,4 @@ async def get_user_with_post(session: AsyncSession):
     stmt = select(User).options(joinedload(User.post_link)).order_by(User.id)
     users = await session.execute(stmt)
     answer = users.unique().scalars().all()
-    return answer
-
-
-async def get_user_with_products(session: AsyncSession):
-    stmt = select(User).options(joinedload(User.products)).order_by(User.id)
-    users = await session.execute(stmt)
-    answer = users.unique().scalars().all()
-    return answer
-
-
-async def get_user_with_profile_and_products(session: AsyncSession):
-    stmt = select(Profile).options(
-        joinedload(Profile.owner).selectinload(User.products)
-    )
-    things = await session.execute(stmt)
-    answer = things.unique().scalars().all()
     return answer
