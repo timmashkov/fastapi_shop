@@ -9,7 +9,7 @@ class ProductBase(BaseModel):
     name: str
     description: str
     price: int
-    user_id: int
+
 
 
 class ProductCreate(ProductBase):
@@ -42,6 +42,5 @@ class Product(ProductBase):
     """
     Схема для возврата записи
     """
-
     model_config = ConfigDict(from_attributes=True)
     id: int
