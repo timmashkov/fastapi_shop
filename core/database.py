@@ -24,9 +24,6 @@ class DataBase:
         """
         Метод для работы с асинхронной БД
         """
-        if self._engine is None:
-            raise Exception("DatabaseSessionManager is not initialized")
-
         session = async_scoped_session(
             session_factory=self._session_factory, scopefunc=current_task
         )
@@ -45,12 +42,9 @@ class DataBase:
         """
         Метод для работы с асинхронной БД без контекстного менеджера
         """
-        try:
-            session = self.get_scoped_session()
-            yield session
-            await session.close()
-        except Exception:
-            raise Exception("DatabaseSessionManager is not initialized")
+        session = self.get_scoped_session()
+        yield session
+        await session.close()
 
 
 vortex = DataBase(settings.db.url, settings.db.echo)

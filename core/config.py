@@ -27,6 +27,7 @@ class TestConfig(BaseSettings):
     db_user_test: str = os.environ.get("DB_USER_TEST")
     db_pass_test: str = os.environ.get("DB_PASS_TEST")
     test_url: str = f"postgresql+asyncpg://{db_user_test}:{db_pass_test}@{db_host_test}:{db_port_test}/{db_name_test}"
+    lite_url: str = "sqlite+aiosqlite:///./test.db"
     echo: bool = True
 
 

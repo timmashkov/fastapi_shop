@@ -21,14 +21,14 @@ router = APIRouter(prefix="/users")
 @router.get("/show_users",
             response_model=list[UserResponseSchema],
             description="Show all users")
-@cache(expire=60)
+#@cache(expire=60)
 async def show_users(session: AsyncSession = Depends(vortex.scoped_session_dependency)):
     return await get_users(session=session)
 
 
 @router.get("/show_user/{username}",
             description="Show specific user")
-@cache(expire=60)
+#@cache(expire=60)
 async def show_user(
     username: str, session: AsyncSession = Depends(vortex.scoped_session_dependency)
 ):
@@ -64,10 +64,10 @@ async def update_user(
     return await change_user(session=session, username=username, data=user_in)
 
 
-@router.delete("/delete_user",
+@router.delete("/delete_user/{user}",
                description="Delete user")
 async def delete_user(
-    user: User = Depends(user_by_id),
+    user: str,
     session: AsyncSession = Depends(vortex.scoped_session_dependency),
 ):
     return await drop_user(session=session, user=user)

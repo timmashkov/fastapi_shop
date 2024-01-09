@@ -5,7 +5,7 @@ Update
 Delete
 """
 from sqlalchemy.engine import Result
-from sqlalchemy import select, update
+from sqlalchemy import select, update, delete
 from sqlalchemy.orm import joinedload
 from sqlalchemy.ext.asyncio import AsyncSession
 from core.models import User
@@ -41,7 +41,7 @@ async def get_user(session: AsyncSession, username: str) -> User | dict:
 
 
 async def change_user(
-    username: str, session: AsyncSession, data: UserAddingSchema
+        username: str, session: AsyncSession, data: UserAddingSchema
 ) -> User:
     """
     Функция для изменения данных юзера
@@ -62,7 +62,7 @@ async def change_user(
     return answer
 
 
-async def drop_user(session: AsyncSession, user: User) -> dict:
+async def drop_user(session: AsyncSession, user: str) -> dict:
     """
     Функция удаления юзера
     :param session:
@@ -70,9 +70,10 @@ async def drop_user(session: AsyncSession, user: User) -> dict:
     :return:
     """
     try:
-        await session.delete(user)
+        stmt = delete(User).where(User.username == user)
+        await session.execute(stmt)
         await session.commit()
-        return {"message": f"User {user} has been deleted"}
+        return {"message": f"User has been deleted"}
     except Exception as e:
         return {"message": "something went wrong", "error": e}
 
