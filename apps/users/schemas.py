@@ -1,4 +1,4 @@
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, EmailStr
 
 
 class UserAddingSchema(BaseModel):
@@ -7,6 +7,7 @@ class UserAddingSchema(BaseModel):
     """
 
     username: str
+    email: EmailStr
 
 
 class UserUpdatePartial(UserAddingSchema):

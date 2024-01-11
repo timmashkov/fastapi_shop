@@ -41,8 +41,8 @@ async def get_user(session: AsyncSession, username: str) -> User | dict:
 
 
 async def change_user(
-        username: str, session: AsyncSession, data: UserAddingSchema
-) -> User:
+    username: str, session: AsyncSession, data: UserAddingSchema
+) -> dict:
     """
     Функция для изменения данных юзера
     :param username:
@@ -52,14 +52,16 @@ async def change_user(
     """
     stmt = (
         update(User)
-        .where(User.username == username)
-        .values(username=data.username)
-        .returning(User.id, User.username)
+        .where(User.username == username,
+               )
+        .values(username=data.username,
+                email=data.email)
+        .returning(User.id, User.username, User.email)
     )
     result: Result = await session.execute(stmt)
     await session.commit()
-    answer = result.scalars().all()
-    return answer
+    answer = result.first()
+    return answer._asdict()
 
 
 async def drop_user(session: AsyncSession, user: str) -> dict:

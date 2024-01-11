@@ -18,8 +18,7 @@ class Product(Base):
     price: Mapped[int] = mapped_column(Integer)
 
     orders: Mapped[list["Order"]] = relationship(
-        secondary="order_product_link",
-        back_populates="products"
+        secondary="order_product_link", back_populates="products"
     )
 
     def __str__(self):

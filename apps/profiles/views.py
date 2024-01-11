@@ -11,9 +11,11 @@ from core.models import Profile
 router = APIRouter(prefix="/profile")
 
 
-@router.post("/create_profile/{user_id}",
-             response_model=ProfileResponseSchema,
-             description="Create new profile")
+@router.post(
+    "/create_profile/{user_id}",
+    response_model=ProfileResponseSchema,
+    description="Create new profile",
+)
 async def create_profile(
     user_id: int,
     data: ProfileAddingSchema,
@@ -22,8 +24,7 @@ async def create_profile(
     return await add_user_profile(session=session, user_id=user_id, data=data)
 
 
-@router.put("/update_profile/{first_name}",
-            description="Change profile info")
+@router.put("/update_profile/{first_name}", description="Change profile info")
 async def update_profile(
     first_name: str,
     profile_in: ProfileAddingSchema,
@@ -34,8 +35,7 @@ async def update_profile(
     )
 
 
-@router.delete("/delete_profile/{first_name}",
-               description="Delete profile")
+@router.delete("/delete_profile/{first_name}", description="Delete profile")
 async def delete_profile(
     session: AsyncSession = Depends(vortex.scoped_session_dependency),
     profile_in: Profile = Depends(profile_by_id),
@@ -43,8 +43,7 @@ async def delete_profile(
     return await drop_user_profile(profile=profile_in, session=session)
 
 
-@router.get("/get_profile/{profile_in}",
-            description="Show specific profile")
+@router.get("/get_profile/{profile_in}", description="Show specific profile")
 @cache(expire=60)
 async def get_profile(
     profile: Profile = Depends(profile_by_id),
