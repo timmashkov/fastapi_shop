@@ -6,7 +6,6 @@ from .conftests import client
 @pytest.mark.asyncio
 async def test_show_users(client: AsyncClient):
     response = await client.get("apps/users/show_users")
-    print(response.json())
     assert response.status_code == 200
 
 

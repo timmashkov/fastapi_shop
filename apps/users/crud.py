@@ -52,10 +52,10 @@ async def change_user(
     """
     stmt = (
         update(User)
-        .where(User.username == username,
-               )
-        .values(username=data.username,
-                email=data.email)
+        .where(
+            User.username == username,
+        )
+        .values(username=data.username, email=data.email)
         .returning(User.id, User.username, User.email)
     )
     result: Result = await session.execute(stmt)
