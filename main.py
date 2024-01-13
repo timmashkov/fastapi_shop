@@ -7,15 +7,11 @@ from fastapi_cache.backends.redis import RedisBackend
 from redis import asyncio as aioredis
 from starlette.middleware.cors import CORSMiddleware
 
-from core.config import settings
+from core.config import settings, logger
 
 from apps import router as apps_router
 
-# from core.models import Base
-# from core.test_database import test_database
 
-
-# TODO: used scitpts to create\drop database instead of fixture
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     redis = aioredis.from_url(
@@ -23,16 +19,13 @@ async def lifespan(app: FastAPI):
         encoding="utf-8",
         decode_response=True,
     )
+    logger.info(f"Cache via redis connected to {settings.redis_host}")
     FastAPICache.init(RedisBackend(redis), prefix="fastapi-cache")
-    # async with test_database.test_engine.begin() as conn:
-    # await conn.run_sync(Base.metadata.create_all)
     yield
-    # async with test_database.test_engine.begin() as conn:
-    # await conn.run_sync(Base.metadata.drop_all)
 
 
 app = FastAPI(title="FastAPI Shop", lifespan=lifespan)
-# TODO: удалить apps/users
+
 app.include_router(apps_router)
 
 

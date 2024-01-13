@@ -2,10 +2,8 @@ import smtplib
 from email.message import EmailMessage
 
 from celery import Celery
-from pydantic import json
 
-from core.config import settings
-
+from core.config import settings, logger
 
 celery = Celery("tasks", broker=f"redis://{settings.redis_host}:{settings.redis_port}")
 
@@ -30,7 +28,12 @@ def get_email_template_dashboard(username: str) -> EmailMessage:
 
 @celery.task
 def send_email_report_dashboard(username: str) -> None:
-    email = get_email_template_dashboard(username)
-    with smtplib.SMTP_SSL(settings.MAIL_SERVER, settings.MAIL_PORT) as server:
-        server.login(settings.MAIL_USERNAME, settings.GOOGLE_API_PASS)
-        server.send_message(email)
+    logger.info("Celery task works")
+    try:
+        email = get_email_template_dashboard(username)
+        with smtplib.SMTP_SSL(settings.MAIL_SERVER, settings.MAIL_PORT) as server:
+            server.login(settings.MAIL_USERNAME, settings.GOOGLE_API_PASS)
+            server.send_message(email)
+        logger.info(f"Message to {username} has been sent")
+    except Exception as e:
+        logger.error(f"Error {e} has been raised")

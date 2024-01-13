@@ -1,10 +1,11 @@
 from pydantic_settings import BaseSettings
-from pydantic import BaseModel
+import logging
 from dotenv import load_dotenv
 import os
 
 load_dotenv()
 
+logger = logging.getLogger(__name__)
 
 class DbSettings(BaseSettings):
     """

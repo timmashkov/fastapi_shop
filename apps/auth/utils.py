@@ -6,7 +6,7 @@ from fastapi import Depends
 from fastapi_users_db_sqlalchemy import SQLAlchemyUserDatabase
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from core.config import settings
+from core.config import settings, logger
 from core.database import vortex
 from core.models import User
 
@@ -42,6 +42,10 @@ def get_email(username: str) -> EmailMessage:
 
 def send_email(username: str) -> None:
     email = get_email(username)
-    with smtplib.SMTP_SSL(settings.MAIL_SERVER, settings.MAIL_PORT) as server:
-        server.login(settings.MAIL_USERNAME, settings.GOOGLE_API_PASS)
-        server.send_message(email)
+    try:
+        with smtplib.SMTP_SSL(settings.MAIL_SERVER, settings.MAIL_PORT) as server:
+            server.login(settings.MAIL_USERNAME, settings.GOOGLE_API_PASS)
+            server.send_message(email)
+        logger.info(f"Email to {username} has been sent")
+    except Exception as e:
+        logger.error(f"Error {e} has been raised")

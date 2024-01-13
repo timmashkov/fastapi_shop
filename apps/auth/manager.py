@@ -1,4 +1,4 @@
-from core.config import settings
+from core.config import settings, logger
 from typing import Optional
 
 from fastapi import Depends, Request
@@ -23,17 +23,17 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
         Sending email after registration
         """
         send_email(username=user.username)
-        print(f"User {user.id} has registered.")
+        logger.info(f"User {user.id} has registered.")
 
     async def on_after_forgot_password(
         self, user: User, token: str, request: Optional[Request] = None
     ):
-        print(f"User {user.id} has forgot their password. Reset token: {token}")
+        logger.info(f"User {user.id} has forgot their password. Reset token: {token}")
 
     async def on_after_request_verify(
         self, user: User, token: str, request: Optional[Request] = None
     ):
-        print(f"Verification requested for user {user.id}. Verification token: {token}")
+        logger.info(f"Verification requested for user {user.id}. Verification token: {token}")
 
 
 async def get_user_manager(user_db=Depends(get_user_db)):

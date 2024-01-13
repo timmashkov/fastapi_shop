@@ -5,6 +5,7 @@ from starlette.responses import JSONResponse
 
 from apps.mail.data import conf
 from apps.mail.schemas import EmailSchema
+from core.config import logger
 
 router = APIRouter(prefix="/mail")
 
@@ -21,8 +22,12 @@ async def simple_send(email: EmailSchema, text: str) -> JSONResponse:
     )
 
     fm = FastMail(conf)
-    await fm.send_message(message)
-    return JSONResponse(status_code=200, content={"message": "email has been sent"})
+    try:
+        await fm.send_message(message)
+        logger.info(f"Message {message} has been sent")
+        return JSONResponse(status_code=200, content={"message": "email has been sent"})
+    except Exception as e:
+        logger.error(f"Error {e} has been raised")
 
 
 # as background task
@@ -38,10 +43,12 @@ async def send_in_background(
     )
 
     fm = FastMail(conf)
-
-    background_tasks.add_task(fm.send_message, message)
-
-    return JSONResponse(status_code=200, content={"message": "email has been sent"})
+    try:
+        background_tasks.add_task(fm.send_message, message)
+        logger.info(f"Message {message} has been sent")
+        return JSONResponse(status_code=200, content={"message": "email has been sent"})
+    except Exception as e:
+        logger.error(f"Error {e} has been raised")
 
 
 @router.post("/file", description="Sending file via email")
@@ -59,7 +66,9 @@ async def send_file(
     )
 
     fm = FastMail(conf)
-
-    background_tasks.add_task(fm.send_message, message)
-
-    return JSONResponse(status_code=200, content={"message": "email has been sent"})
+    try:
+        background_tasks.add_task(fm.send_message, message)
+        logger.info(f"Message {message} has been sent")
+        return JSONResponse(status_code=200, content={"message": "email has been sent"})
+    except Exception as e:
+        logger.error(f"Error {e} has been raised")
