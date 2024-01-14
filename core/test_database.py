@@ -17,5 +17,5 @@ class TestDatabase:
 
 
 test_database = TestDatabase(
-    url=settings.test_config.lite_url, echo=settings.test_config.echo
+    url=settings.test_config.test_url, echo=settings.test_config.echo
 )
