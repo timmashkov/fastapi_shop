@@ -13,16 +13,17 @@ async def test_register():
         "is_active": True,
         "is_superuser": False,
         "is_verified": False,
-        "username": "pytest_test"
+        "username": "pytest_test",
     }
     async with test_database.test_session_maker() as test_session:
-        stmt = insert(User).values(username=data["username"],
-                                   email=data["email"],
-                                   is_active=data["is_active"],
-                                   is_superuser=data["is_superuser"],
-                                   is_verified=data["is_verified"],
-                                   hashed_password=data["password"]
-                                   )
+        stmt = insert(User).values(
+            username=data["username"],
+            email=data["email"],
+            is_active=data["is_active"],
+            is_superuser=data["is_superuser"],
+            is_verified=data["is_verified"],
+            hashed_password=data["password"],
+        )
         await test_session.execute(stmt)
         await test_session.commit()
 
@@ -44,10 +45,11 @@ async def test_show_users():
 @pytest.mark.asyncio
 async def test_update_user():
     async with test_database.test_session_maker() as test_session:
-        stmt = update(User
-                      ).where(User.username == "pytest_test"
-                              ).values(username="pytest_test_update",
-                                       email="pytest_update@test.com")
+        stmt = (
+            update(User)
+            .where(User.username == "pytest_test")
+            .values(username="pytest_test_update", email="pytest_update@test.com")
+        )
         await test_session.execute(stmt)
         await test_session.commit()
 
@@ -60,8 +62,7 @@ async def test_update_user():
 @pytest.mark.asyncio
 async def test_delete_user():
     async with test_database.test_session_maker() as test_session:
-        stmt = delete(User
-                      ).where(User.username == "pytest_test_update")
+        stmt = delete(User).where(User.username == "pytest_test_update")
         await test_session.execute(stmt)
         await test_session.commit()
 

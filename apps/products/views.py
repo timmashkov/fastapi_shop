@@ -56,9 +56,9 @@ async def upd_product(
     )
 
 
-@router.delete("/del_product/{id}", description="Delete product")
+@router.delete("/del_product/{product_id}", description="Delete product")
 async def del_product(
-    product: Product = Depends(product_by_id),
+    product_id: int,
     session: AsyncSession = Depends(vortex.scoped_session_dependency),
 ):
-    return await delete_product(session=session, product=product)
+    return await delete_product(session=session, product=product_id)

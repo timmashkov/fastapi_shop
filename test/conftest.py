@@ -26,7 +26,7 @@ async def override_session_dependency() -> AsyncGenerator[AsyncSession, None]:
 app.dependency_overrides[vortex.session_dependency] = override_session_dependency
 
 
-@pytest_asyncio.fixture(autouse=True, scope='session')
+@pytest_asyncio.fixture(autouse=True, scope="session")
 async def prepare_database():
     async with test_database.test_engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
@@ -36,7 +36,7 @@ async def prepare_database():
 
 
 # SETUP
-@pytest.fixture(scope='session')
+@pytest.fixture(scope="session")
 def event_loop(request):
     """Create an instance of the default event loop for each test case."""
     policy = asyncio.WindowsSelectorEventLoopPolicy()

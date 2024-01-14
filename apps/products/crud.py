@@ -5,7 +5,7 @@ Update
 Delete
 """
 from sqlalchemy.engine import Result
-from sqlalchemy import select
+from sqlalchemy import select, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.config import logger
@@ -77,7 +77,7 @@ async def update_product(
         logger.error(f"Error {e} has been raised")
 
 
-async def delete_product(session: AsyncSession, product: Product) -> None:
+async def delete_product(session: AsyncSession, product: int) -> None | dict:
     """
     Функция для удаления из БД
     :param session:
@@ -85,7 +85,9 @@ async def delete_product(session: AsyncSession, product: Product) -> None:
     :return:
     """
     try:
-        await session.delete(product)
+        stmt = delete(Product).where(Product.id == product)
+        await session.execute(stmt)
         await session.commit()
+        return {"Message": f"Product with id {product} has been deleted"}
     except Exception as e:
         logger.error(f"Error {e} has been raised")

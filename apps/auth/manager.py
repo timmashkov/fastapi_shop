@@ -33,7 +33,9 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
     async def on_after_request_verify(
         self, user: User, token: str, request: Optional[Request] = None
     ):
-        logger.info(f"Verification requested for user {user.id}. Verification token: {token}")
+        logger.info(
+            f"Verification requested for user {user.id}. Verification token: {token}"
+        )
 
 
 async def get_user_manager(user_db=Depends(get_user_db)):
