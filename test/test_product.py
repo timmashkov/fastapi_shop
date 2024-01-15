@@ -7,11 +7,7 @@ from core.models import Product
 
 @pytest.mark.asyncio
 async def test_add_product():
-    data = {
-        "name": "test",
-        "description": "test",
-        "price": 666
-    }
+    data = {"name": "test", "description": "test", "price": 666}
     async with test_database.test_session_maker() as test_session:
         stmt = insert(Product).values(
             name=data["name"],
