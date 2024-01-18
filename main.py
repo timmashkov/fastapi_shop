@@ -32,15 +32,9 @@ app.include_router(apps_router)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.origins,
-    allow_credentials=True,
-    allow_methods=["GET", "PUT", "POST", "PATCH", "OPTION", "DELETE"],
-    allow_headers=[
-        "Content-Type",
-        "Set-Cookie",
-        "Access-Control-Allow-Headers",
-        "Access-Control-Allow-Origin",
-        "Authorization",
-    ],
+    allow_credentials=settings.credentials,
+    allow_methods=settings.methods,
+    allow_headers=settings.headers,
 )
 
 

@@ -50,6 +50,15 @@ class Settings(BaseSettings):
     db: DbSettings = DbSettings()
     # CORS сетап
     origins: list = ["http://127.0.0.1:8000"]
+    credentials: bool = True
+    methods: list = ["GET", "PUT", "POST", "PATCH", "OPTION", "DELETE"]
+    headers: list = [
+        "Content-Type",
+        "Set-Cookie",
+        "Access-Control-Allow-Headers",
+        "Access-Control-Allow-Origin",
+        "Authorization",
+    ]
     # Redis
     redis_port: str = os.environ.get("REDIS_PORT")
     redis_host: str = os.environ.get("REDIS_HOST")
