@@ -12,10 +12,12 @@ COPY . .
 
 WORKDIR /fastapi_shop
 
-CMD gunicorn main:app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind=0.0.0.0:8000
+RUN apt-get update && apt-get install -y postgresql-client
 
-COPY docker/alembic.sh ./
-ENTRYPOINT ["docker/alembic.sh"]
+COPY docker/migration.sh ./
+
+ENTRYPOINT ["docker/migration.sh"]
 
 #COPY docker/celery.sh ./
+
 #ENTRYPOINT ["docker/celery.sh"]

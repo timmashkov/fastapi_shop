@@ -1,24 +1,35 @@
 version: "3.7"
 services:
-  db:
+  shop_db:
     image: postgres:16
     container_name: shop_db
-    command: -p 5435
+    command: postgres -p 5435
     expose:
       - 5435
     env_file:
       - .env_prod
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -p 5435" ]
+      interval: 5s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    restart: always
 
-  redis:
-    image: redis:7
+  redis_shop:
+    image: redis:latest
     container_name: redis_shop
-    command: --port 5370
-    expose:
-      - 5370
+    ports:
+      - "5370:5370"
     env_file:
       - .env_prod
+    healthcheck:
+      test: [ "CMD-SHELL", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
 
-  shop_app:
+  fastapi_shop:
     build:
       context: .
     env_file: .env_prod
@@ -26,5 +37,7 @@ services:
     ports:
       - '1488:8000'
     depends_on:
-      - db
-      - redis
+      shop_db:
+        condition: service_healthy
+      redis_shop:
+        condition: service_healthy
