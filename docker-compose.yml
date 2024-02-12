@@ -34,8 +34,9 @@ services:
       context: .
     env_file: .env_prod
     container_name: fastapi_shop
+    command: sh -c "chmod +x /fastapi_shop/docker/migration.sh && /fastapi_shop/docker/migration.sh"
     ports:
-      - '1488:8000'
+      - '8814:8000'
     depends_on:
       shop_db:
         condition: service_healthy
